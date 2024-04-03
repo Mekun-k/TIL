@@ -1,1 +1,22 @@
 paizaの記録と復習用に作成
+
+
+2024/04/04
+C142:レストランのメニュー
+
+回答コード
+S = gets.chomp
+N = gets.to_i
+T_1 = gets.chomp
+
+
+if T_1.include? S
+    puts "Yes" 
+else
+    puts "No"
+end
+
+感想
+paiza特有のデータ取得方法がわからない&インデントを間違えておりテストに通らなかった。
+paizaの問題の解き方は理解できたのでどんどんこなしていこう。
+
