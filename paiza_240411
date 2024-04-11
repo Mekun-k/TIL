@@ -1,0 +1,98 @@
+自社開発企業の一次面接にて出題された問題。
+全く解けなかったから悔しかった。
+rubyの基礎を勉強してアルゴリズムを養う問題を解くことに専念する。
+教えていただき本当に感謝。
+とりあえず出力は結果通りになったけどもっといいコードがあるはずでは？
+
+
+# 下記の関数を書いてください。
+
+# > 長さ 3 の文字列 S が引数として与えられます。
+# > S に 1 度だけ含まれる文字を 1 つを返り値にする関数を書いてください。
+# > 但し、そのような文字が存在しない場合は代わりに -1 を返り値にしてください。
+
+# - 例1：aab -> b
+# - 例2：abc -> a または b または c(※ どれでもいいので)
+# - 例3：ppp -> -1 (1度だけ含まれる文字がないので)
+
+# 得意な言語で書いて、pull requestを作成してください。
+
+
+# 自分が書いたコード
+def nmuber_check(s)
+
+  nmubers = s.split("")
+  nmuber_1 = nmubers[0]
+  new_nmuber = nmubers[1,2]
+
+  nmuber_count = 0
+  nmuber = ""
+
+  new_nmuber.each do |n|
+    case n
+    when nmuber_1 then
+      nmuber_count += 1
+      nmuber = n
+    end
+  end
+
+  case nmuber_count
+    when 0 then
+      return nmuber_1
+    when 1 then
+      nmubers.each do |n|
+        unless n == nmuber
+          return n
+        end
+      end
+    when 2 then
+      return -1
+  end
+end
+
+
+# chatgptが書いたコード
+
+def number_check(s)
+  counts = Hash.new(0)
+
+  s.each_char { |char| counts[char] += 1 }
+
+  counts.each_key do |key|
+    return key if counts[key] == 1
+  end
+
+  -1
+end
+
+
+-感想-
+
+# 自分の書いたコードでも出力されるが、chatgptのコードと比べると天と地の差がある。
+# 空のハッシュを作る
+# 検証する、その中でretrunで値を返す。
+# それ以外の処理に関しては、　値のみ書いておく
+
+# 1行目でデフォルト値が0のハッシュを作成
+# 2行名で各文字列に対して処理を実行、同じ文字があればカウントするためにプラス1
+# 例　counts = {a => 1, b => 2}
+
+# 各数字に対して処理を実行する、その際、keyのみ繰り返し処理したい。
+
+
+
+
+value = "aab"
+puts nmuber_check(value)
+
+value = "abc"
+puts nmuber_check(value)
+
+value = "ppp"
+puts nmuber_check(value)
+
+value = "aaa"
+puts nmuber_check(value)
+
+value = "cca"
+puts nmuber_check(value)
