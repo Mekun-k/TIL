@@ -2,3 +2,22 @@ a, b = gets.split(' ').map(&:to_i)
 
 gets.split(' ') で入力を半角スペース区切りにした配列を生成して受け取る。
 map メソッドを用いて配列の各要素を整数に変換する
+
+
+https://paiza.jp/works/mondai/reviews/show/bf717a9383c2aef5ec5cd77233112051
+n = gets.to_i
+a = Array.new(n)
+s = Array.new(n)
+n.times do |i|
+    a[i], s[i] = gets.split(' ').map.with_index { |val,  j| j == 1 ? val.to_i : val }
+end
+n.times { |i| puts a[i] + ' ' + s[i].to_s }
+
+インデックス番号を使う発想がないのでビビった。
+配列を使って決まったインデックス番号に処理を行う際にはwith_indexを使用すること
+
+nを代入
+n個の要素をもつ配列を作成
+配列に入力値を代入
+配列に処理を実施して出力
+
