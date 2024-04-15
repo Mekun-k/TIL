@@ -52,6 +52,15 @@ timesの中にtimesを使えることに驚いた。
 配列のインデックス番号もしかり。
 
 
+変数に配列を代入するときこれにしよ
+二つ入ってくれるみたい。
 
+自分
+str = gets.split(' ').map(&:to_i)
+n = str[0]
+m = str[1]
+
+模範
+n, m = gets.split(' ').map(&:to_i)
 
 
