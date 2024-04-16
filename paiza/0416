@@ -1,0 +1,35 @@
+dランク
+
+標準入力メニューの最終問題が解けなかったのでもう一度解くことにする
+
+決まった回数処理をしたいときはtimesメソッドを使用する
+その処理の中で繰り返し処理をすればいい
+
+times do 
+ 入力値を受け取る
+ 入力値を加工する
+ 入力値を出力する
+end
+
+標準出力メニュー、スタート
+https://paiza.jp/works/mondai/stdout_primer/problem_index?language_uid=ruby
+
+https://paiza.jp/works/mondai/stdout_primer/stdout_primer__space_oneline_step4/edit?language_uid=ruby
+(* 1 から 10 までの数値をすべて、半角スペース区切りで出力してください。
+ただし、末尾に半角スペースを出力してはいけません。 *)
+(1..10).each { |num| print num; print ' ' if num < 10 }
+
+{ |変数| 出力メソッド 変数;　　特定の条件のみ実施したい処理　後置if }
+
+2つの変数を使って配列を作成したい
+# 文字列 paiza と learning を半角スペース区切りで出力してください。
+n = "paiza"
+m = "learning"
+
+a = Array.new(2)
+a[0] = n
+a[1] = m
+
+a = [n, m]
+
+puts a.join(' ')
