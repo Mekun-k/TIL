@@ -1,1 +1,76 @@
 今日の積み上げ
+
+
+# 10 個の数値が改行区切りで与えられます。
+# これらの数値を半角スペース 2 つとバーティカルライン | 区切りで出力してください。
+
+# 入力される値
+# N1
+# N2
+# N3
+# ...
+# N10
+
+# 期待する出力
+# N1 | N2 | N3 | ... | N10
+
+# me
+a = Array.new(10)
+10.times do |i|
+    s = gets.split(' ').map(&:to_i)
+    a[i] = s
+end
+puts a.join(' | ')
+
+# gpt
+puts 10.times.map { gets.chomp }.join(' | ')
+
+https://paiza.jp/works/mondai/stdout_primer/stdout_primer__specific_split_step6/edit?language_uid=ruby
+# 大きな数値 N が入力されます。3 けたごとにカンマ区切りで出力してください。
+# ただし、N のけた数は 3 の倍数です。
+
+# 入力される値
+# N
+
+# 期待する出力
+# M
+
+解けなかった。
+
+#ループを使用する方法
+N = gets.chomp
+result = ""
+
+N.chars.each_with_index do |char, index|
+  result << "," if index % 3 == 0 && index != 0
+  result << char
+end
+
+puts result
+
+# scanメソッドを使用する方法
+
+N = gets.chomp
+N.scan(/.{1,3}/).join(',')
+
+            
+p N = gets.chomp          "123456789"
+p N.class                 String
+p a = N.scan(/.{1,3}/)    ["123", "456", "789"]
+p a.class                 Array 
+p a.join(',')             "123,456,789"
+p a.join(',').class       String
+p a.join('')              "123456789"
+
+
+文字列.scan(条件)で配列を作成できる
+配列.join(条件)で文字列を作成できる
+
+scanメソッドは、正規表現に一致する部分文字列をすべて取得し、それらを配列に格納します
+
+
+
+
+
+
+
