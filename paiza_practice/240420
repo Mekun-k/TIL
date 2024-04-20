@@ -90,3 +90,39 @@ puts A[start_index...end_index].join(' ')
 バカは回数をこなして学習していこう。
 自分の頭で発想できないならひたすらインプットして盗んでいけ。
           ^
+
+https://paiza.jp/works/mondai/stdout_primer/stdout_primer__variable_array_step1/edit?language_uid=ruby
+結果：ミス
+原因：ポカミス、繰り返し処理のところで(1..8)と書いたが正解は、(1..N)。他のテストケースには適応できていなかった。
+1問目
+# 偶数 N が入力されます。まず、 1 行目には 1 以上 N / 2 以下の数値を半角スペース区切りですべて出力してください。
+# 次に、 2 行目には N / 2 + 1 以上 N 以下の数値を半角スペース区切りですべて出力してください。
+# 各行の末尾には、半角スペースの代わりに改行を入れてください。
+
+# 入力例1
+# 8
+
+# 出力例1
+# 1 2 3 4
+# 5 6 7 8
+
+N = gets.to_i
+
+first_half = []
+second_half = []
+
+(1..8).each do |i|
+    if i >= 1 && i <= N / 2
+        first_half << i
+    else
+        second_half << i
+    end
+end
+
+puts first_half.join(' ')
+puts second_half.join(' ')
+
+第一問目について他の解き方がないか調べる。
+理解できたら第二問目に移る。
+
+
