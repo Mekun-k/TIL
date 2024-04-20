@@ -1,1 +1,70 @@
 2024/04/19(金)の積み上げ
+
+https://paiza.jp/works/mondai/stdout_primer/ruby/stdout_primer__2dim_array_boss/result?token=aa78e1348b027434d82a7dd51755b8e2
+# 自然数 N が入力されます。N 行 N 列の九九表を出力してください。
+# 具体的には、出力の i 行 j 列目 (1 ≦ i, j ≦ N ) の数値は i * j になるように出力してください
+# ただし、数値の間には半角スペースを、各行の末尾には、半角スペースの代わりに改行を入れてください。
+
+# 入力例1
+# 3
+
+# 出力例1
+# 1 2 3
+# 2 4 6
+# 3 6 9
+
+# me
+N = gets.to_i
+
+N.times do |nam|
+    nam += 1
+    a = (1..N).map { |i| nam * i }
+    puts a.join(' ')
+end
+
+# gpt
+N = gets.to_i
+
+N.times do |i|
+    row = (1..N).map { |j| (i + 1) * j }.join(' ')
+    puts row
+end
+
+timesメソッドをつかうときは変数をiにする。
+mapメソッドの変数はjにする
+mapメソッドの中でカウント変数を足したいときは変数にいれなくても上記の記述でおっけ、map メソッドの{}の中に記述すること
+mapメソッドにjoinメソッドをつかいたいときは、{}.joinと記述する
+Cランク問題が解けたことに成長を感じた今日この頃
+
+
+
+https://paiza.jp/works/mondai/stdout_primer/ruby/stdout_primer__variable_array_step1/result?token=8c21f03ac250a78c019135c348239b49
+# 偶数 N が入力されます。まず、 1 行目には 1 以上 N / 2 以下の数値を半角スペース区切りですべて出力してください。
+# 次に、 2 行目には N / 2 + 1 以上 N 以下の数値を半角スペース区切りですべて出力してください。
+# 各行の末尾には、半角スペースの代わりに改行を入れてください。
+
+# 入力例1
+# 8
+
+# 出力例1
+# 1 2 3 4
+# 5 6 7 8
+
+N = gets.to_i
+
+first_half = []
+second_half = []
+
+N.times do |i|
+    i += 1
+    if i >= 1 && i <= N / 2
+      first_half << i  
+    elsif i >= N / 2 + 1
+      second_half << i
+    end
+end
+
+puts first_half.join(' ')
+puts second_half.join(' ')
+
+
