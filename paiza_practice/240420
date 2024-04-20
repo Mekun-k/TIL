@@ -1,1 +1,92 @@
 4月20日(土)の積み上げ
+
+
+range.to_aで配列が作れる。
+例　(1..3).to_a => [1, 2, 3]
+
+受け取る処理自体は合っている。
+でも出力の仕方がナンセンス。もっと簡単に実装できるのにtimesやeachを使おうとしていた。
+
+以下のように変換することができる
+A = gets.chomp.split.join
+[1, 2, 3, 4, 5] => "12345"
+
+
+hoge = [1, 2, 3]
+puts hoge.join
+実行結果
+123
+
+hoge = [1 2 3]
+puts hoge.join
+実行結果
+Main.rb:39: syntax error, unexpected integer literal, expecting ']'
+hoge = [1 2 3]
+
+
+ファイナル問題がとけない
+https://paiza.jp/works/mondai/stdout_primer/ruby/stdout_primer__variable_array_boss/result?token=130fe18827845e0c44d050b9118762f7
+N, M = gets.split(' ')
+A = gets.split(' ')
+B = gets.split(' ').map(&:to_i)
+
+B1 = []
+B2 = []
+B3 = []
+B4 = []
+
+
+A.each_with_index do |char, index|
+    if index < B[0]
+        B1 << char
+    elsif index < B[0] + B[1]
+        B2 << char
+    elsif index < B[0] + B[1] + B[2]
+        B3 << char
+    elsif index < B[0] + B[1] + B[2] + B[3]
+        B4 << char
+    end
+end
+
+puts B1.join(' ')
+puts B2.join(' ')
+puts B3.join(' ')
+puts B4.join(' ')
+
+gptパイセン
+N, M = gets.split.map(&:to_i)
+A = gets.split.map(&:to_i)
+B = gets.split.map(&:to_i)
+
+start_index = 0
+M.times do |i|
+    b = B[i]
+    end_index = start_index + b
+    puts A[start_index...end_index].join(' ')
+    start_index = end_index
+end
+
+
+.. : 閉区間演算子。指定した範囲の終了値を含みます。
+... : 開区間演算子。指定した範囲の終了値を含みません。
+たとえば、1..5 は 1 から 5 までの整数の範囲を表し、1...5 は 1 から 4 までの整数の範囲を表します。
+開区間演算子を使用すると、指定した値が範囲に含まれないことがわかりやすくなります。
+
+前問と比べてちょっと難しかったかもしれませんが、イメージとしては 数列A を M 個に分割するというものです。
+1 行目は数列のここからここまでを出力、2 行目は数列のここからここまでを出力...ということがわかれば前問と同じように解くことができます。
+さて、各行で出力する区間なのですが、始点(begin)がわかれば終点(end)は end = begin + B[i] - 1 と、容易に求まります。注意点として、end = begin + B[i] とすると、最後の要素は範囲外なので出力してはいけません(今回は数学の言葉で「閉区間」として考えます。)。
+次に始点について考えてみます。最初に出力する数列の始点は 0 です(問題文では 1 - indexed でしたが、解説では 0 -indexed です)。
+i番目に出力する数列の始点について考えてみます。これは、(i - 1 番目に出力する数列の終点) + 1 であることがわかります。よって、すべての数列の始点と終点がわかりました。
+
+方針とコードの解き方を理解して自分のものにする
+
+おそらくいままで以下のコードにて出力をしてきた
+puts A[start_index...end_index].join(' ')
+
+だから始点と終点を求めるという発想がでてくればよかった。
+もう一度、基礎問題から解き直してこう。
+大抵、行数の整数を受け取れば、N.timesを使用している。
+
+バカは回数をこなして学習していこう。
+自分の頭で発想できないならひたすらインプットして盗んでいけ。
+          ^
