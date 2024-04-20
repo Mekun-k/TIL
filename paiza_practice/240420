@@ -124,5 +124,158 @@ puts second_half.join(' ')
 
 第一問目について他の解き方がないか調べる。
 理解できたら第二問目に移る。
+#別の解き方
+N = gets.to_i
+puts (1..N/2).to_a.join(' ')
+puts (N/2+1..N).to_a.join(' ')
+
+
+第二問目
+https://paiza.jp/works/mondai/stdout_primer/ruby/stdout_primer__variable_array_step2/result?token=cb65df0af58cbdc4e04d3eac0994f37b
+
+# 自然数 N, M が与えられます。1 行目には 1 以上 N 以下の数値を半角スペース区切りで出力してください。
+# また、2 行目には 1 以上 M 以下の数値を半角スペース区切りで出力してください。
+# さらに、各行の末尾には、半角スペースの代わりに改行を入れてください。
+# 入力例1
+# 3 5
+
+# 出力例1
+# 1 2 3
+# 1 2 3 4 5
+
+#解き方１
+N, M = gets.split(' ').map(&:to_i)
+
+puts (1..N).to_a.join(' ')
+puts (1..M).to_a.join(' ')
+
+#解き方2
+A = gets.split(' ').map(&:to_i)
+
+first_half = []
+second_half = []
+
+A.each do |i|
+    if i >= 1 && i <= A[0]
+        first_half << (1..i)
+    elsif i >= 1 && i <= A[1]
+        second_half << (1..i)
+    end
+end
+
+first_half.each { |first| puts first.to_a.join(' ') }
+second_half.each { |second| puts second.to_a.join(' ') }
+
+(1..3)などはto_a.join、もしくは、eachメソッドでputs val.join(' ')で処理する
+
+第3問目
+
+# 自然数 N が与えられます。1 ≦ i ≦ N の各 i について、i 行目には以下の数列を出力してください。
+# * 1 以上 i 以下の数値をすべて、半角スペース区切りで出力してください
+
+# 入力される値
+# N
+
+# 入力例1
+# 4
+
+# 出力例1
+# 1
+# 1 2
+# 1 2 3
+# 1 2 3 4
+
+#me
+N = gets.to_i
+
+N.times do |i|
+    row =  (1..i+1).to_a.join(' ')
+    puts row
+end
+
+#gpt
+N = gets.to_i
+
+(1..N).each do |i|
+    nam =  (1..i)
+    puts nam.to_a.join(' ')
+end
+
+どっちでも結果は同じ。
+(1..N).each　の発想がでてこなかったので感心。
+結局大事なのは(1..N)というrangeを使っている点に尽きる。
+これを覚えるためにこの演習があるはず。
+数字を連番させる処理を実装する際にはrangeを使うことを意識しよう。
+
+第4問目
+# 自然数 N と N 個の要素の数列 M が与えられます。
+# 1 ≦ i ≦ N の各 i について、i 行目には以下の数列を出力してください。
+# * 1 以上 M_i 以下のすべての自然数を昇順、半角スペース区切りで出力してください。
+
+# N
+# M_1 M_2 M_3 ... M_N
+
+# 入力例1
+# 4
+# 2 4 3 1
+
+# 出力例1
+# 1 2
+# 1 2 3 4
+# 1 2 3
+# 1
+
+#me
+N = gets.to_i
+M = gets.split(' ').map(&:to_i)
+
+M.each do |i|
+    puts (1..i).to_a.join(' ')
+end
+
+#me
+N = gets.to_i
+M = gets.split(' ').map(&:to_i)
+
+(1..N).each do |i|
+    i = i - 1
+    nam = M[i].to_i
+    puts (1..nam).to_a.join(' ')
+end
+
+本当はputsの行でM[i]を使いたかった。
+でもrangeでは配列を使用することはできないみたい。←まちがい
+Mが1だった場合
+M = [1]
+M[1]となると要素が一つしかないのにインデックス番号が2つ目の要素を呼び出しているのでnilになる。
+なのでこの場合は、timesメソッドを使用するのが正しい。
+
+整数に変換してnam変数に代入した。そのnam変数を(1..nam)とすることで解決。
+でももっと綺麗なコードになるはず。
+
+#gpt
+N = gets.to_i
+M = gets.split.map(&:to_i)
+
+N.times do |i|
+  nums = (1..M[i]).to_a
+  puts nums.join(' ')
+end
+
+めちゃくちゃ綺麗やん。
+入力値の受け取り方がちがうな。
+
+M = gets.split.map(&:to_i)
+p M
+p M.class
+[2, 4, 3, 1]
+Array
+
+
+Array
+[2, 4, 3, 1]
+
+次はファイナル問題を解いてみる。
+
 
 
