@@ -41,3 +41,183 @@ puts  A[start_index...end_index].to_a.join(' ')
 A配列のインデックス番号を指定していた。その発想がなかったので学びになった。
 明日、もう一度解いてみて解けるか検証してみる。
 
+解けなかった問題。
+https://paiza.jp/works/mondai/stdout_primer/stdout_primer__format_real_number_step3/edit?language_uid=ruby
+N = gets.to_f.round(3)
+puts format('%.3f', N)
+
+format('%.3f', N)は、浮動小数点数 N を小数第3位までの桁でフォーマットするための方法です。ここでの '%.3f' は、フォーマット文字列で、次のように解釈されます：
+
+% : フォーマット指定子の開始を示します。
+.3 : 小数点以下の桁数を指定します。この場合、小数第3位までを表します。
+f : 浮動小数点数をフォーマットする指定子です。
+format メソッドは、指定されたフォーマット文字列に従って引数をフォーマットし、文字列として返します。つまり、format('%.3f', N)は、N を小数第3位までの桁でフォーマットし、その結果を文字列として返します。
+
+これにより、小数第3位まで丸められた値が文字列として得られます。そして、puts メソッドによってその文字列が出力されます。
+
+正解
+https://paiza.jp/works/mondai/stdout_primer/ruby/stdout_primer__format_real_number_step4/result?token=299c6b5ec9f5165b81bdf1d123120a70
+# 実数 N、自然数 M が入力されます。N を丸めて小数第 M 位まで出力してください。
+# また、N の小数部が小数第 M 位に満たない場合は 0 で埋めて出力してください。
+
+# なお、小数第 M 位が 5 になることはありません。
+# 自然な丸め処理を行って出力すると正解になります。
+
+# 入力例4
+# 0.813 4
+
+# 出力例4
+# 0.8130
+
+#me
+N, M = gets.chomp.split(' ').map(&:to_f)
+
+reslut = N.round(M.to_i)
+puts format("%.#{M.to_i}f", N)
+
+もっと短くできるみたい。
+Mを浮動小数点数から整数に変換する必要はないみたい。
+このコードであれば浮動小数点数でも正常に作動するらしい。
+
+
+ファイナル問題-解けた！
+https://paiza.jp/works/mondai/stdout_primer/ruby/stdout_primer__format_real_number_boss/result?token=36c0a194d931ffb41bbb65bdd2e0f62c
+# 自然数 Q が与えられます。Q 回以下の問題に答えてください。
+
+# * 実数 N、自然数 M が入力されます。N を丸めて小数第 M 位まで出力してください。
+# また、N の小数部が小数第 M 位に満たない場合は 0 で埋めて出力してください。
+
+# なお、小数第 M 位が 5 になることはありません。
+# 自然な丸め処理を行って出力すると正解になります。
+
+# Q
+# N_1 M_1
+
+# 入力例1
+# 4
+# 0.813 1
+# 0.813 2
+# 0.813 3
+# 0.813 4
+
+# 出力例1
+# 0.8
+# 0.81
+# 0.813
+# 0.8130
+
+Q = gets.to_i
+
+Q.times do |i|
+    N, M = gets.split(' ').map(&:to_f)
+    sum = N.round(M.to_i)
+    puts format("%.#{M.to_i}f", sum)
+end
+
+文字を連結したいときはメソッドを使わなくてもできる
+以下の内容は先頭に空白を追加したい時に使用する
+N = ' ' + N
+
+https://paiza.jp/works/mondai/stdout_primer/ruby/stdout_primer__print_width_step3/result?token=b3e7b95055427d6fe022e87db777930f
+
+# 自然数 N が与えられます。
+# N 個の自然数が与えられるので、それぞれを数値 M_i について以下の処理を行ってください。
+# M_i が 3 けたになるよう数値の前に半角スペースを埋めて出力してください。
+
+# 入力される値
+# N
+# M_1
+# M_2
+# M_3
+# ...
+# M_N
+
+
+# 期待する出力
+# M_1
+# M_2
+# M_3
+# ...
+# M_N
+
+N = gets.to_i
+
+N.times do |i|
+    M = gets.chomp
+    output = M.rjust(3, " ")
+    puts output
+end
+
+https://paiza.jp/works/mondai/stdout_primer/stdout_primer__print_width_step4/edit?language_uid=ruby&t=84e664ef050db88a9954e8d0a83d2418
+# 自然数 N, M が与えられます。
+# N が M けたになるよう数値の前に半角スペースを埋めて出力してください。
+
+# 入力例1
+# 813 4
+
+# 出力例1
+# 813
+
+# 入力例2
+# 813 8
+
+# 出力例2
+# 813
+
+N, M = gets.split(' ')
+
+output = N.rjust(M.to_i, " ")
+puts output
+
+ファイナル問題-解けた！
+https://paiza.jp/works/mondai/stdout_primer/stdout_primer__print_width_boss/edit?language_uid=ruby&t=4ac5340c97f88af67d4027fcd6b71e5b
+
+# 自然数 N, M と N 個の自然数 A_1, A_2, ..., A_N が与えられます。
+# それぞれの数値が M けたになるよう数値の前に半角スペースを埋めて、改行区切りで出力してください。
+
+# 入力例1
+# 4 3
+# 0
+# 8
+# 81
+# 813
+
+# 出力例1
+# 0
+# 8
+# 81
+# 813
+
+N, M = gets.split(' ').map(&:to_i)
+
+N.times do
+    A = gets.chomp
+    output = A.rjust(M, " ")
+    puts output
+end
+
+https://paiza.jp/works/mondai/stdout_primer/ruby/stdout_primer__specific_format_step1/result?token=8a94b3ece7b53b1da5e2783c8b2f8536
+ # 文字列 S, T が与えられます。S + T = ST という形式で文字列を出力してください。
+
+# 入力例1
+# kirishima
+# kyoko
+
+# 出力例1
+# kirishima + kyoko = kirishimakyoko
+
+# 入力例2
+# S
+# T
+
+# 出力例2
+# S + T = ST
+
+S = gets.chomp
+T = gets.chomp
+
+puts "#{S} + #{T} = #{S + T}"
+
+
+
+
