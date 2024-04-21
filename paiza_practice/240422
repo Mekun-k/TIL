@@ -73,6 +73,7 @@ https://paiza.jp/works/challenges/710/page/result
 # 出力例1
 # 3
 
+#me
 N = gets.to_i
 
 count = 0
@@ -90,5 +91,23 @@ end
 
 puts count
 
+#gpt
+def winning_hand(hand)
+    case hand
+    when 'G' then 'C'  # グーの場合はチョキが勝つ
+    when 'C' then 'P'  # チョキの場合はパーが勝つ
+    when 'P' then 'G'  # パーの場合はグーが勝つ
+    end
+end
+
+N = gets.to_i
+count = 0
+
+N.times do
+    A, B = gets.split(' ')
+    count += 1 if winning_hand(A) == B
+end
+
+puts count
 
 
