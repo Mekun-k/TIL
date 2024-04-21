@@ -1,0 +1,94 @@
+4月22日(月)の積み上げ
+
+「累乗 2 Ruby編」
+https://paiza.jp/works/mondai/arithmetic_substitution_op/arithmetic_substitution_op__arithmetic_step6
+
+# 整数 A, B, C, D が与えられます。  を計算した結果を出力してください。
+# ここで、X mod Dとは X を D で割った余りを指します。
+
+# ((A + B) * C)二乗  X / D
+
+# 入力例1
+# 28 57 33 73
+
+# 出力例1
+# 12
+
+A, B, C, D = gets.split(' ').map(&:to_i)
+result = ((A + B) ** 2 * C ** 2) % D
+puts result
+
+代入演算 4 Ruby編」
+https://paiza.jp/works/mondai/arithmetic_substitution_op/arithmetic_substitution_op__substitution_step4
+# 整数 A, B が与えられます。以下のアルゴリズムを実行してください。
+# 変数 N を 10,000 で初期化する
+# N を A で割った商を N へ代入する
+# N を B で割った余りを N へ代入する
+# N を出力する
+
+# 入力例1
+# 911 285
+
+# 出力例1
+# 10
+
+N = 10000
+
+A, B = gets.split(' ').map(&:to_i)
+
+N = N / A
+N = N % B
+
+puts N
+
+
+C144:じゃんけんの結果
+https://paiza.jp/works/challenges/710/page/result
+
+# アリスさんはじゃんけんが大好きで、過去に何度も友達のボブさんとじゃんけんを行いました。
+# 手元には、アリスさんとボブさんとの間で、過去に行われたじゃんけんの結果を全て記録したノートがあります。
+
+# ノートの記録を元に、過去にアリスさんはボブさんに何回勝ったかを出力するプログラムを作成してください。
+
+# 例えば入力例 1 の場合、過去にじゃんけんは 6 回行われ、
+# そのうちアリスさんは 3 回勝ち、 1 回あいこ、 2 回負けているので、プログラムでは 3 と一行に出力します。
+
+# ・1 行で過去に行われたじゃんけんの回数を表す整数 N が与えられます。
+# ・続く N 行のうちの i 行目 (1 ≦ i ≦ N) には、
+# (i 回目のじゃんけんにおいてアリスさんが出した手)、
+# (i 回目のじゃんけんにおいてボブさんが出した手) を表す文字列 A_i, B_i がこの順で半角スペース区切りで与えられます。
+# ・入力は合計で N + 1 行となり、末尾に改行が 1 つ入ります。
+# ・じゃんけんの手は「グー」、「チョキ」、「パー」の 3 種類のみであり、
+# それぞれ順番に 'G', 'C', 'P' というアルファベット 1 文字によって表現されます。
+
+
+# 入力例1
+# 6
+# G C
+# C G
+# P G
+# G C
+# P P
+# P C
+# 出力例1
+# 3
+
+N = gets.to_i
+
+count = 0
+
+N.times do
+    A, B = gets.split(' ')
+    if A == "G"  && B == "C"
+        count += 1
+    elsif A == "C"  && B == "P"
+        count += 1
+    elsif A == "P"  && B == "G"
+        count += 1
+    end
+end
+
+puts count
+
+
+
