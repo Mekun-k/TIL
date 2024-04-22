@@ -1,4 +1,76 @@
 4月23日(火)の積み上げ
 
 目標：なるべく後置if文、三項演算子を使ってコード量を少なくすること
+メモ
+関数の引数には定数を定義できない
+No: def hoge(A, B, C)
+Ok: def hoge(a, b, c)
 
+https://paiza.jp/works/challenges/571/page/result
+
+#--------me---------
+N, M = gets.split(' ').map(&:to_i)
+A, B, C = gets.split(' ').map(&:to_i)
+
+count = 0
+
+N.times do |i|
+    R = gets.to_i
+    calculation = C * R - A - B * M
+    count += 1 if calculation < 0
+end
+
+puts count
+#--------me---------
+
+#--------me_edit---------
+def calculation(a, b, c, r, m)
+    result = c * r - a - b * m
+end
+
+N, M = gets.split(' ').map(&:to_i)
+A, B, C = gets.split(' ').map(&:to_i)
+
+count = 0
+
+N.times do |i|
+    R = gets.to_i
+    result = calculation(A, B, C, R, M) # calculation 関数を呼び出して結果を受け取る
+    count += 1 if result < 0
+end
+
+puts count
+#--------me_edit---------
+
+
+# あなたは、とある会社の新入社員です。
+
+# あなたの会社には、ファイル名に英数字もしくはハイフン '-' のみを使うというルールがあります。
+# しかし、ハイフンの使い方が社員それぞれなため、社内のファイル名が乱雑になってしまっています。
+# 耐えがたく感じたあなたは、長さ 2 以上のハイフンをすべて長さ 1 のハイフンにしたいと考えました。
+
+# ファイル名を表す文字列が与えられるので、長さ 2 以上のハイフンをすべて長さ 1 にするプログラムを作成してください。
+
+# 例えば、入力例 1 の場合、以下のようになります。
+
+# 力は以下のフォーマットで与えられます。
+
+# S
+# ・1 行目に、ファイル名を表す文字列 S が与えられます。S は英数字もしくはハイフンからなります。
+# ・入力は合計で 1 行となり、入力値最終行の末尾に改行が 1 つ入ります。
+
+# 入力例1
+# --PA-I---ZA
+# 出力例1
+# -PA-I-ZA
+
+
+def fix_hyphens(filname)
+    filname.gsub(/-{2,}/, "-")
+end
+
+S = gets.chomp
+output = fix_hyphens(S)
+puts output
+
+gsub: 文字列内のパターンに一致する部分を置換するためのメソッド、指定したパターンに一致した部分を別の文字列で置き換える
