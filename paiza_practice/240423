@@ -74,3 +74,56 @@ output = fix_hyphens(S)
 puts output
 
 gsub: 文字列内のパターンに一致する部分を置換するためのメソッド、指定したパターンに一致した部分を別の文字列で置き換える
+
+
+https://paiza.jp/works/challenges/73/page/result
+#--------me---------
+M, P, Q = gets.split(' ').map(&:to_i)
+ 
+P = P * 0.01
+Q = Q * 0.01
+
+sum = M - (M * P)
+
+output = sum - (sum * Q)
+puts output
+#--------me---------
+
+#--------me_edit---------
+M, P, Q = gets.split(' ').map(&:to_i)
+ 
+def percentage_value(nam)
+    result = nam * 0.01
+    return result
+end
+
+def hoge(m, n)
+    result = m - (m * n)
+    return result
+end
+
+P = percentage_value(P)
+Q = percentage_value(Q)
+
+output1 = hoge(M, P)
+output2 = hoge(output1, Q)
+puts output2
+
+#--------me_edit---------
+
+
+#--------gpt--------- 
+
+def remaining_after_sales(m, p, q)
+  remaining_raw = m * (100 - p) / 100.0
+  remaining_prepared = remaining_raw * (100 - q) / 100.0
+  return remaining_prepared
+end
+
+m, p, q = gets.split(' ').map(&:to_i)
+result = remaining_after_sales(m, p, q)
+puts result
+
+#--------gpt---------
+
+
