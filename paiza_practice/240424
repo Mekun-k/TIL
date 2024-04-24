@@ -1,0 +1,93 @@
+4月24日(水)の積み上げ
+paizaの有料プランに加入した。Cランク獲得ストーリーにて基礎を固める。
+それからBランク獲得ストーリーを学ぶ。
+
+三項演算子を使うことに慣れないと。
+後置if文は使えるようになってきた。
+条件分岐するなら積極的に三項演算子を使っていく。
+
+配列を作りたいときはmapメソッドを使う。これ便利
+numbers = n.times.map { gets.to_i }
+
+特定の値が含まれているか確認するときはincludeメソッドを使う。
+配列にも使えるので便利。
+nums.include?(0)
+
+
+# 文字列Sが与えられます。Sがpaizaと一致する場合はYESを、一致しない場合はNOを出力してください。
+# YESまたはNOを出力してください。末尾に改行を入れ、余計な文字、空行を含んではいけません。
+
+def paiza_exists?(s)
+    if s == "paiza"
+        "YES"
+    else
+        "NO"
+    end
+end
+
+S = gets.chomp
+
+puts paiza_exists?(S)
+
+
+条件式 ? 真の場合の値 : 偽の場合の値
+s == "paiza" ? "YES" : "NO"
+
+メソッド名を参考にする
+Nが 0 ではない場合はYESを、 0 である場合はNOを出力してください。
+def check_number(n)
+    n != 0 ? "YES" : "NO"
+end
+
+
+
+
+#---------- me -------------
+# 長さ N の数列Aが与えられます。Aの中に 0 が含まれていない場合はYESを、
+# 0 が含まれている場合はNOを出力してください。
+
+# 入力される値
+# N
+# A_1
+# A_2
+# ...
+# A_N
+
+# 期待する出力
+# YESまたはNOを出力してください。末尾に改行を入れ、余計な文字、空行を含んではいけません。
+
+# YES
+
+# または
+# NO
+
+def check_no_zero?(num)
+    num.each { |n| return "NO" if n == 0  }
+    "YES"
+end
+
+N = gets.to_i
+
+count = []
+
+N.times do 
+    a = gets.to_i
+    count << a    
+end
+
+puts check_no_zero?(count)
+
+#---------- me -------------
+
+#---------- gpt -------------
+def check_no_zero?(nums)
+  nums.include?(0) ? "NO" : "YES"
+end
+
+n = gets.to_i
+numbers = n.times.map { gets.to_i }
+
+puts check_no_zero?(numbers)
+#---------- gpt -------------
+
+
