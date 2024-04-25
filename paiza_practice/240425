@@ -1,0 +1,25 @@
+4月25日(木)の積み上げ
+
+def fizzbuzz(n)
+  result = [] # 空の配列を作成
+
+  (1..n).each do |i|
+    if i % 3 == 0 && i % 5 == 0
+      result << "FizzBuzz"
+    elsif i % 3 == 0
+      result << "Fizz"
+    elsif i % 5 == 0
+      result << "Buzz"
+    else
+      result << i 
+    end
+  end
+
+  return result
+end
+
+fizzbuzz_result = fizzbuzz(100)
+
+puts fizzbuzz_result.inspect
+
+
