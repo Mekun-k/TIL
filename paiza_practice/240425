@@ -1,5 +1,8 @@
 4月25日(木)の積み上げ
 
+
+三項演算子で条件式を二つ書く場合()の中に記述する！
+
 def fizzbuzz(n)
   result = [] # 空の配列を作成
 
@@ -21,5 +24,23 @@ end
 fizzbuzz_result = fizzbuzz(100)
 
 puts fizzbuzz_result.inspect
+
+
+# 2 つの整数A、Bが与えられます。AとBが両方とも 10 以上の場合はYESを、そうではない場合はNOを出力してください。
+
+# 入力例1
+# 12 10
+
+# 出力例1
+# YES
+
+# A, B = gets.split(' ').map(&:to_i)
+
+# puts (A <= 10 && B <= 10) ? "YES" : "NO"
+
+A, B = gets.split(' ').map(&:to_i)
+
+puts (A >= 10 && B >= 10) ? "YES" : "NO"
+
 
 
