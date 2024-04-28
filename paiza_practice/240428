@@ -1,1 +1,227 @@
 4月28日(日)の積み上げ
+
+メモ
+
+zipメソッド
+2つの配列をもとに二次元配列を作成することができるメソッド。
+A = [1, 2, 3, 4, 5]
+B = [1, 20, 30, 4, 5]
+X = [[1, 1], [2, 20], [3, 30], [4, 4], [5, 5]]
+
+countメソッド
+配列に対して使用可能なメソッドでブロック内の条件と一致する要素数を値にて教えてくれるメソッド。
+条件を書かないと配列の要素数を返す。
+count { |a, b| a == b }
+
+「FizzBuzz Ruby編」
+https://paiza.jp/works/mondai/conditions_branch/ruby/conditions_branch__mod_boss/result?token=8a9259234cccf08426afc327e50760ea
+# 整数Nが与えられます。 
+# Nが 3 で割り切れる場合はFizz、
+# Nが 5 で割り切れる場合はBuzz、 
+# Nが 3 と 5 の両方で割り切れる場合はFizzやBuzzの代わりにFizzBuzzを出力してください。
+# ただし、Nが 3 の倍数でも 5 の倍数でもないときはNをそのまま出力してください。
+# 期待する出力
+# Fizz
+# または
+# Buzz
+# または
+# FizzBuzz
+# または
+# N
+
+
+#------------- me ---------------
+N = gets.to_i
+
+def check_FizzBuzz(nam)
+    if nam % 3 == 0 && nam % 5 == 0
+        "FizzBuzz"
+    elsif nam % 3 == 0
+        "Fizz"
+    elsif nam % 5 == 0
+        "Buzz"
+    else
+        nam
+    end
+end
+
+output = check_FizzBuzz(N)
+
+puts output
+#------------- me ---------------
+
+
+
+「けた数の測定 Ruby編」
+https://paiza.jp/works/mondai/conditions_branch/ruby/conditions_branch__complex_step1/result?token=dd2288898acc103d93df86fa22133765
+# 整数Nが与えられます。Nのけた数を出力してください。
+
+# 入力される値
+# N
+# 期待する出力
+# N のけた数Dを出力してください。
+
+# D
+
+# 入力例2
+# 100
+
+# 出力例2
+# 3
+
+N = gets.chomp
+size = N.length
+puts size
+
+
+自分の解き方は整数を文字列に変換して文字数を判定していた。
+でも、位を判定するなら整数のまま判定するのが正規法なのかな？
+Nが9以下の場合、答えは1
+Nが10以上99以下の場合、答えは2
+Nが100以上999以下の場合、答えは3
+
+def check_number(n)
+    if N <= 9
+        1
+    elsif N >= 10 && N <= 99
+        2
+    elsif N >= 100 && N <= 999
+        3
+    end
+end
+
+N = gets.to_i
+output = check_number(N)
+puts output
+
+
+
+
+「足したり引いたり Ruby編」
+https://paiza.jp/works/mondai/conditions_branch/ruby/conditions_branch__complex_step2/result?token=11f57a0356d217dcaa55359bc2c13f9c
+
+# 整数N, A, B ( - 99 ≦ N, A, B ≦ 100 ) があります。
+# 以下の 2 つの操作をそれぞれ 1 回ずつおこなったとき、
+# Nを 0 にできる場合はYESを、できない場合はNOを出力してください。
+# 1. NにAを足す、またはNからAを引く
+# 2. NにBを足す、またはNからBを引く
+
+# 入力例1
+# -10 8 2
+
+# 出力例1
+# YES
+
+def check_nmuber_1(n, a, b)
+        n += a
+        n += b
+        return n
+end
+
+def check_nmuber_2(n, a, b)
+        n += a
+        n -= b
+        return n
+end
+
+def check_nmuber_3(n, a, b)
+        n -= a
+        n += b
+        return n
+end
+
+def check_nmuber_4(n, a, b)
+        n -= a
+        n -= b
+        return n
+end
+
+N, A, B = gets.split(' ').map(&:to_i)
+
+if check_nmuber_1(N, A, B) == 0
+    puts "YES"
+elsif check_nmuber_2(N, A, B) == 0
+    puts "YES"
+elsif check_nmuber_3(N, A, B) == 0
+    puts "YES"
+elsif check_nmuber_4(N, A, B) == 0
+    puts "YES"
+else
+    puts "NO"
+end
+
+#-------- gpt ---------
+def can_make_zero(n, a, b)
+  [a, -a].each do |op1|
+    [b, -b].each do |op2|
+      return 'YES' if n + op1 + op2 == 0
+    end
+  end
+  'NO'
+end
+
+N, A, B = gets.split.map(&:to_i)
+puts can_make_zero(N, A, B)
+#-------- gpt ---------
+
+
+「同値判定 Ruby編」
+https://paiza.jp/works/mondai/conditions_branch/ruby/conditions_branch__complex_step3/result?token=293eb451414d0ecc3182f6d35ddb39b2
+# 整数N, 2 つの数列A, B が与えられます。 
+# 1 ≦ i ≦ N を満たす整数 i のうち、A_i と B_i が等しくなるような i の個数を求めてください。
+
+# 入力される値
+# N
+# A_1 A_2 ... A_N
+# B_1 B_2 ... B_N
+
+# 期待する出力
+# A_i == B_iである要素の個数Cを求めてください。
+
+
+# C
+#------------- me ---------------
+N = gets.to_i
+
+A = gets.split(' ').map(&:to_i)
+B = gets.split(' ').map(&:to_i)
+
+count = 0
+
+N.times do |i|
+    count += 1 if A[i] == B[i]
+end
+
+puts count
+#------------- me ---------------
+
+
+#------------- gpt ---------------
+N = gets.to_i
+
+A = gets.split(' ').map(&:to_i)
+B = gets.split(' ').map(&:to_i)
+
+output = A.zip(B).count { |a, b| a == b }
+puts output
+#------------- gpt ---------------
+
+zipメソッドとcountメソッドが便利すぎる。
+ここまでコードが便利になるとは思わなかった。
+二つの配列をもとの二次元配列を作成することに悩んでいたので解決できてよかった。
+また、めんどくさい処理をよしなにやってくれるメソッドが豊富でrubyはいい言語だと思う。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
