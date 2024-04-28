@@ -13,6 +13,10 @@ countメソッド
 条件を書かないと配列の要素数を返す。
 count { |a, b| a == b }
 
+
+最初の要素の最初の文字を取得するにはarray[i][0]
+最後の要素の最後の文字を取得するにはarray[i][-1]
+
 「FizzBuzz Ruby編」
 https://paiza.jp/works/mondai/conditions_branch/ruby/conditions_branch__mod_boss/result?token=8a9259234cccf08426afc327e50760ea
 # 整数Nが与えられます。 
@@ -212,8 +216,75 @@ zipメソッドとcountメソッドが便利すぎる。
 また、めんどくさい処理をよしなにやってくれるメソッドが豊富でrubyはいい言語だと思う。
 
 
+C114:しりとりの判定
+https://paiza.jp/works/challenges/555/page/result
+# 入力される値
+# N
+# s_1
+# s_2
+# ...
+# s_N
+# ・1 行目に入力される単語の数 N が与えられます。
+# ・続く N 行のうちの i 行目 (1 ≦ i ≦ N) には英字小文字および、英字大文字からなる文字列 s_i が与えられます。
+# ・入力は合計で N + 1 行となり、入力値最終行の末尾に改行が 1 つ入ります。
 
+# 期待する出力
+# しりとりが成立する場合、以下の形式で出力してください。
+# Yes
+# しりとりが成立しない場合、以下の形式で出力してください。
+# x y
+# 期待する出力は 1 行からなります。
+# 初めてしりとりが成立しなかった 2 つの連続する単語の 1 つ目の単語の末尾の文字を表す英字 x と
+# 2 つ目の単語の先頭の文字を表す英字 y をこの順で半角スペース区切りで出力してください。
 
+#------------ me ------------
+N = gets.to_i
+
+a = []
+string_first = []
+string_last = []
+
+N.times do |i|
+   a << gets.chomp  
+end
+
+a.each do |val|
+    string_first << val.chars.first
+    string_last << val.chars.last
+end
+
+string_first.shift
+
+def check_num(a, b)
+    a.zip(b).count do |f, l|
+        return "#{l} #{f}" if f != l
+    end
+    "YES"
+end
+
+result = check_num(string_first, string_last)
+puts result
+#------------ me ------------
+
+#------------ gpt ------------
+N = gets.to_i
+
+words = []
+N.times { words << gets.chomp }
+
+valid = true
+
+(1...words.size).each do |i|
+    if words[i - 1][-1] != words[i][0]
+        valid = false
+        puts "#{words[i - 1][-1]} #{words[i][0]}"
+        break
+    end
+end
+
+puts valid ? "Yes" : ""
+
+#------------ gpt ------------
 
 
 
