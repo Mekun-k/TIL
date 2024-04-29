@@ -28,4 +28,102 @@ puts output # 出力結果 "aacccaa"
 条件に当てはまる単語は用意している配列に入力する。
 それから決まった出力になるように処理を実行する。
 
+二次元配列でeachしたいときは以下のようにする。
+C = [[1, 5], [2, 4], [3, 3], [4, 2], [5, 1]]
+C.each do |a, b|
+end
+
+文字列をアルファベット順に並び替えたいとき
+文字列.sort
+
+数字も似たような感じでおっけ。
+
+
+「積の最小化 Ruby編」採点結果
+https://paiza.jp/works/mondai/conditions_branch/conditions_branch__complex_boss
+# -1,000 ≦ A ≦ B ≦ 1,000 を満たす 2 つの整数 A, B が与えられます。
+# A 以上 B 以下である 2 つの整数 X, Y を適当に選んだとき、
+# X * Y の取り得る値の最小値を出力してください。
+# なお、X と Y は同じ値でもよいものとします。
+# たとえば A が 3, B が 5 の場合について考えます。
+# これは X と Y を両方とも 3 にしたときが最小で、 X * Y が 9 となります。
+
+# 入力例1
+# 3 5
+
+# 出力例1
+# 9
+
+# ----------- me ------------
+X, Y = gets.split(' ').map(&:to_i)
+
+output = []
+
+(X..Y).each do |i|
+    output << i * i
+    (X..Y).each do |j|
+        output << j * j
+        output << i * j
+    end    
+end
+
+puts output.min
+# ----------- me ------------
+
+# ----------- gpt ------------
+A, B = gets.split(' ').map(&:to_i)
+
+min_product = B * B  # B * Bが最小値になる場合が考えられる
+
+(A..B).each do |i|
+  # XとYが同じ値の場合の積
+  min_product = [min_product, i * i].min
+  (i+1..B).each do |j|
+    # XとYが異なる値の場合の積
+    min_product = [min_product, i * j].min
+  end
+end
+
+puts min_product
+# ----------- gpt ------------
+
+
+【二次元配列の入出力】i番目の出力 Boss Ruby編」
+https://paiza.jp/works/mondai/array_primer/array_primer__2dmatrix_i-thoutput_boss
+# 1 行目に整数 N, M, K, L が与えられます。
+# 2 行目以降に N 行 M 列の二次元配列が与えられます。
+# 配列の K 行目 L 列目の要素を出力してください。
+# 上から i 番目、左から j 番目の整数は a_ij です。
+
+# 入力例1
+# 4 3 2 1
+# 1 2 3
+# 10 100 0
+# 8 1 3
+# 7 21 54
+
+# 出力例1
+# 10
+
+# ----------- me ------------
+N, M, K, L = gets.split(' ').map(&:to_i)
+A = Array.new(N).map { Array.new(M) }
+
+N.times do |i|
+    num = gets.split(' ').map(&:to_i)
+    M.times { |j| A[i][j] = num[j] }
+end
+
+puts A[K - 1][L - 1]
+# ----------- me ------------
+
+# ----------- gpt ------------
+N, M, K, L = gets.split.map(&:to_i)
+A = []
+
+N.times { A << gets.split.map(&:to_i) }
+
+puts A[K - 1][L - 1]
+# ----------- gpt ------------
+
 
