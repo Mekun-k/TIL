@@ -1,2 +1,16 @@
 4月29日(月)の積み上げ
 
+文字列から一文字指定したい場合、
+str = "abcde"
+
+# 最初の文字を取得したいとき
+output = str[0]
+puts output # 出力結果 "a"
+
+# 最初から二つ目の要素を取得したいとき
+output = str[1]
+puts output # 出力結果 "b"
+
+# 最後の要素が取得したいとき
+output = str[-1]
+puts output # 出力結果 "e"
