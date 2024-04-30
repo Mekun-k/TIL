@@ -1,5 +1,11 @@
 4月30日(火)の積み上げ
 
+以下の二つの処理は同じことをしている。
+配列numbersに要素を代入している、１番目の方が直感的なコードになっている。
+
+1、numbers = (1..5).to_a
+2、(1..5).each { |i| numbers << i }
+
 
 フィボナッチ数 Ruby編
 https://paiza.jp/works/mondai/array_primer/array_primer__fibo
