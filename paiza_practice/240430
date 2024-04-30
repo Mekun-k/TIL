@@ -1,3 +1,44 @@
 4月30日(火)の積み上げ
 
 
+フィボナッチ数 Ruby編
+https://paiza.jp/works/mondai/array_primer/array_primer__fibo
+
+# 1 行目に整数 N が与えられます。
+# N 番目までのフィボナッチ数を出力してください。
+# フィボナッチ数は
+# F_0 = 0
+# F_1 = 1
+# F_(n+2) = F_n + F_(n+1) (n は 0 以上)
+# * N は 3 以上 10 以下の整数
+# とし、F_0 を 1 番目とします。
+# 入力例1
+# 3
+# 出力例1
+# 0
+# 1
+# 1
+
+# ----------------- me ------------------
+n = gets.to_i
+
+A = [0, 1]
+
+def fibonacci_count(nam)
+    if nam == 0
+        return A[nam]
+    elsif nam == 1
+        return A[nam]
+    else
+        fibonacci_count(nam - 1) + fibonacci_count(nam - 2)
+    end
+end
+
+(0...n).each do |i|
+    puts fibonacci_count(i)
+end
+# ----------------- me ------------------
+
+
+
+
