@@ -10,4 +10,113 @@
   内側を消したい場合
   配列[インデックス番号][インデックス番号].delete_at(インデックス番号)
 
+二次元配列の要素にループ処理を実行したいときは、eachの中でeachを使う
+
+対象の要素のインデックス番号を調べたい時は、indexメソッドを使う
+配列や文字列に対して使用すると、指定した要素のインデックス番号を返してくれる
+array = [1, 2, 3, 4, 5]
+index = array.index(4)
+puts index  # => 3
+
+array = "abcde"
+index = array.index("e")
+puts index  # => 4
+
+Float::INFINITYは、どんな数よりも小さい値
+最大値を探索する際に使用する。
+初期値に-Float::INFINITYを入れておく
+
+
+#二次元配列での要素の検索 Ruby編
+https://paiza.jp/works/mondai/double_roop_problems/double_roop_problems__search
+
+# 整数 N , K と N 行 K 列 の二次元配列 A が与えられます。
+# A の要素のうち、1 要素だけ 1 になっている要素があるので、その要素の行と列を出力してください。
+
+# 期待する出力
+# 1 になっている要素の行と列を次の形式で出力してください。
+# 出力の末尾には改行を入れてください。
+
+# 行番号 列番号
+# 条件
+# すべてのテストケースにおいて、以下の条件をみたします。
+# ・ 1 ≦ N , K ≦ 100
+# ・ A_ij は 0 または 1 (1 ≦ i ≦ N , 1 ≦ j ≦ K)
+# ・ 1 であるような A の要素は 1 つ
+
+# 入力例1
+# 4 3
+# 0 0 0
+# 0 0 0
+# 0 0 1
+# 0 0 0
+
+# 出力例1
+# 3 3
+
+N , K = gets.split(' ').map(&:to_i)
+
+A = Array.new(N).map { Array.new(K) }
+
+N.times do |i|
+    a = gets.split(' ').map(&:to_i)
+    K.times do |j|
+        A[i][j] = a[j]
+    end
+end
+
+output = []
+
+A.each_with_index do |col, i|
+    col.each_with_index do |c, j|
+        if c == 1
+            output << [i + 1,j + 1]
+        end
+    end
+end
+
+puts output.join(' ')
+
+
+
+N , K = gets.split(' ').map(&:to_i)
+
+以下の二つのコードは同じ処理をしている。
+入力値を受け取って二次元配列を作成している。
+ふたつ目のコードの方が圧倒的に楽。
+
+
+1つ目
+2,A = N.times.map { gets.split.map(&:to_i) }
+
+2つ目
+A = Array.new(N).map { Array.new(K) }
+N.times do |i|
+    a = gets.split(' ').map(&:to_i)
+    K.times do |j|
+        A[i][j] = a[j]
+    end
+end
+
+
+N , K = gets.split(' ').map(&:to_i)
+
+A = Array.new(N).map {gets.split(' ').map(&:to_i)}
+
+result = []
+
+row = A.index { |i| i.include?(1) }
+col = A[row].index(1)
+
+puts "#{row + 1} #{col + 1}"
+
+まず、rowで何列目か判定する、{|i|}ブロックを使うことで、eachと同じような処理が実装できる
+rowに数値が入るので、配列[row]とすることで、1が入っている列を呼び出すことができる
+列を呼び出したら後は、indexメソッドを呼び出して1の番号を把握する。
+
+
+
+
+
+
 
