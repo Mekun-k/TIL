@@ -4,6 +4,12 @@
 ↑転置行列をしてくれるメソッド。
 配列.transpose.each { |row| puts row.join(' ') }
 
+reduce(:*)
+↑配列に対して使うメソッドで各要素に同じ処理を実行してくれる
+各要素に掛け算する時に使った
+nums = [1,2,3,4,5]
+puts nums.reduce(:*) #出力結果120
+
 https://paiza.jp/works/mondai/double_roop_problems/double_roop_problems__transposition
 N, K = gets.split(' ').map(&:to_i)
 
