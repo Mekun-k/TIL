@@ -1,1 +1,26 @@
 2024/05/05の積み上げ
+
+配列.transpose
+↑転置行列をしてくれるメソッド。
+
+https://paiza.jp/works/mondai/double_roop_problems/double_roop_problems__transposition
+N, K = gets.split(' ').map(&:to_i)
+
+A = Array.new(K).map { Array.new(N) }
+
+N.times do |i|
+    output = gets.split(' ').map(&:to_i)
+    K.times do |j|
+        A[j][i] = output[j]
+    end
+end
+
+A.each { |n| puts n.join(' ') }
+
+これから処理を言語化していこうと思う。
+まずは、出力内容に合う二次元配列を用意した。
+つぎにN行の入力値を受け取るために繰り返し処理を実施。
+そこで二次元配列の決まったインデックス番号に値を代入したいのでeachをネストした。
+A変数に転置行列された値が入っているのでjoinメソッドにて決まった出力になるようにした。
+
+
