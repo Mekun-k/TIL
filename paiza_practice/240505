@@ -72,6 +72,19 @@ mapメソッドを使った時にjoinを使うのは少し戸惑う。
 ブロック処理の後にjoinを書くことを覚えておこう。
 
 
+以下のコードにて素数の数を求めることができる。
+Primeを使う時にはrequireを使うことが必須。
+require 'prime'
+
+N = gets.to_i
+puts Prime.each(N).count
+
+
+
+
+
+
+
 
 
 
