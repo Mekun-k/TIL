@@ -2,6 +2,7 @@
 
 配列.transpose
 ↑転置行列をしてくれるメソッド。
+配列.transpose.each { |row| puts row.join(' ') }
 
 https://paiza.jp/works/mondai/double_roop_problems/double_roop_problems__transposition
 N, K = gets.split(' ').map(&:to_i)
@@ -22,5 +23,56 @@ A.each { |n| puts n.join(' ') }
 つぎにN行の入力値を受け取るために繰り返し処理を実施。
 そこで二次元配列の決まったインデックス番号に値を代入したいのでeachをネストした。
 A変数に転置行列された値が入っているのでjoinメソッドにて決まった出力になるようにした。
+
+
+
+
+
+https://paiza.jp/works/mondai/double_roop_problems/ruby/double_roop_problems__multiplication/result?token=0b016ddf804f3fd2cbbc0a49629ed056
+N = gets.to_i
+A = gets.split(' ').map(&:to_i)
+
+hoge = A.map do |num|
+    output = []
+    A.each { |e| output << num * e }
+    puts output.join(' ')
+end
+
+難しかったな。まず問題文を読み解くのに時間がかかった。
+これmapを使わなくてもいいんじゃない？hogeを使えていないのでめちゃくちゃ無駄。
+eachをネストさせるだけでいい気がする。
+eachの中にmapメソッドを使うことで代入する処理を書かなくてもいいんじゃない？
+
+N = gets.to_i
+A = gets.split(' ').map(&:to_i)
+
+A.each do |num|
+    output = []
+    N.times do |i|
+        output << num * A[i]
+    end
+    puts output.join(' ')
+end
+
+こっちの解き方の方が直感的で綺麗な気がする。
+でも空の配列を作成してoutput変数に代入する手間が正直面倒なところ
+これを解消できればもう少し綺麗なコードが書ける。
+mapメソッドをここでつかって配列を作成できればらくやな。
+
+N = gets.to_i
+A = gets.split(' ').map(&:to_i)
+
+A.each do |num|
+    puts A.map { |n| num * n  }.join(' ')
+end
+
+mapメソッドを使うとコード量が減った！！
+ブロック処理ができて新たに配列を作成してくれるのは優秀。
+mapメソッドを使った時にjoinを使うのは少し戸惑う。
+ブロック処理の後にjoinを書くことを覚えておこう。
+
+
+
+
 
 
