@@ -1,0 +1,54 @@
+2024/05/14の積み上げ
+
+以下の処理で条件に当てはまる数値を取得することができる
+配列.select {条件}
+numbers.select { |num| num >= 5 }で、配列numbersから5以上の数値を選び出し
+
+
+# 改行区切りで整数がn個入力されるので、
+# n個の整数のうち、5以上のものをすべて足し合わせた値を出力してください。
+
+
+# n (数字の総数)
+# a_1
+# a_2
+# a_3
+# ...
+# a_i
+# ...
+# a_n
+
+# 期待する出力
+# 入力された整数a_iのうち5以上のものをすべて足し合わせた値を出力してください。
+
+n = gets.to_i
+
+A = []
+
+def num_sum(n)
+    A << n if n >= 5
+end
+
+n.times do 
+    n = gets.to_i
+    num_sum(n)
+end
+
+puts A.sum
+
+gpt
+n = gets.to_i
+
+# n個の整数を読み込む
+numbers = n.times.map { gets.to_i }
+
+# 5以上の数値を選び出し、その合計を計算する
+result = numbers.select { |num| num >= 5 }.sum
+
+# 結果を出力する
+puts result
+
+
+    
+
+
