@@ -1,0 +1,91 @@
+2024/05/15の積み上げ
+
+めちゃくちゃ簡単なことを理解できていなかった。
+Rubyでは、関数内の処理で関数外の変数の値を変更することはできない。
+変数外の値を変更したい場合は、関数内では値を引数として渡して、呼び出し元で外部の変数に対しての操作を実行してあげる。
+変数のスコープ範囲についてもう一回把握しなおしたほうがいいな笑
+
+問題
+https://paiza.jp/works/mondai/prob60/total_value_9
+
+# 2つの整数の組がn個与えられるので、各組の計算結果を足し合わせたものを出力してください。
+# 各組の計算結果は次の値です。
+# ・2つの整数の組を足し合わせたもの
+# ・ただし、2つの整数が同じ値だった場合は、掛け合わせたもの
+
+# n
+# a_1 b_1
+
+n = gets.to_i
+
+A = []
+
+def n_check(a, b)
+    if a == b
+        A << a * b
+    else
+        A << a + b
+    end
+end
+
+n.times do
+    a, b = gets.split(' ').map(&:to_i)
+    n_check(a, b)
+end
+
+puts A.sum
+
+最初は下のコードを書いた。
+カウンタ変数を定義。関数の中で三項演算子を用いて、カウンタ変数に値を代入していくつもりだった。
+しかし、どうやら実装できないみたい。
+Main.rb:17:in `n_check': undefined method `+' for nil:NilClass (NoMethodError)
+
+n = gets.to_i
+result = 0
+
+def n_check(a, b)
+    if a == b ? result += a * b : result += a + b
+end
+
+n.times do
+    a, b = gets.split(' ').map(&:to_i)
+    n_check(a, b)
+end
+
+puts result
+
+このエラーは何が原因やろ？resultの変数のスコープに問題があるのか？関数の中で関数外で定義した変数を使うことってできたかな？
+
+↑の考察は当たっていた。めちゃくちゃ基本的なことを理解できていなかった。
+Rubyでは、メソッドの中で外部の変数を直接操作することはできない。
+外部の変数を操作する場合は、その変数をメソッドの引数として渡すか、メソッドが値を返すようにして、その値を外部で使う必要がある。
+
+結論、呼び出し元で蓄積していけば解決できそう。
+
+あと、三項演算子の構文を間違えていた。
+ifが余計だったみたい。
+
+
+修正版！
+n = gets.to_i
+
+result = 0
+
+def num_chack(a, b)
+    a == b ? a * b : a + b    
+end
+
+n.times do
+    a, b = gets.split(' ').map(&:to_i)
+    result += num_chack(a, b)
+end
+
+puts result
+
+
+
+
+
+
+
+
