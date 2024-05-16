@@ -1,0 +1,32 @@
+2024/05/16の積み上げ
+
+https://paiza.jp/works/mondai/prob60/substring_upper_9
+
+文字列を大文字にするメソッドがわからなかった。
+upcase　大文字
+downcase　小文字
+
+
+
+a, b = gets.split(' ').map(&:to_i)
+s = gets.chomp
+
+count = 0
+output = []
+
+s.chars do |char|
+    count += 1
+    if count >= a && count <= b
+        output << char.upcase
+    else
+        output << char
+    end
+end
+
+puts output.join('')
+
+これでもいけるみたい。
+rangeにもupcaseって使えるんやな。
+この考え方はなかった！
+s[a-1..b-1] = s[a-1..b-1].upcase
+
