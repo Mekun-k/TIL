@@ -1,0 +1,24 @@
+5月17日(金)の積み上げ
+
+https://paiza.jp/works/mondai/prob60/substring_9
+
+
+a, b = gets.split(' ').map(&:to_i)
+
+output = []
+s = gets.chomp
+count = 0
+
+s.chars do |char|
+    count += 1
+    if count >= a && count <= b
+        output << char
+    end
+end
+
+puts output.join("")
+
+すんなり解けた。
+でも配列に代入することなく解けそうな気がする
+たしかsliceみたいなメソッドにて切り取りができたような気がする。
+もしくは、文字列を一文字づつ配列に入れてからインデックス番号を指定すればできそう
