@@ -1,0 +1,45 @@
+2024/05/19の積み上げ
+
+https://paiza.jp/works/mondai/prob60/sort_asc_9
+自力で解けてうれしいな！
+でも結構時間がかかった。
+数字が文字列になるとsortメソッドを使っても並び替えは発動しない。
+あくまでもこの問題は数字を昇順にしないといけなかったので、
+["A", 1]だとアルファベットの昇順になってしまっていた。
+入力値の順番を変えないといかなかった。
+それさえ気付けば後は自分の引き出しでなんとか実装できた！
+
+
+n = gets.to_i
+array = []
+
+n.times do |i|
+    ary = gets.split(' ')
+    ary[1] = ary[1].to_i
+    array << ary.reverse
+end
+
+output = array.sort
+output.each do |n|
+    puts n[1]
+end
+
+### gpt ###
+n = gets.to_i
+array = []
+
+n.times do
+  s, d = gets.split
+  d = d.to_i
+  array << [d, s]
+end
+
+# 整数でソート
+array.sort.each do |pair|
+  puts pair[1]
+end
+
+こっちの方が綺麗なコードだなと思う。
+入力値を受け取るときに変数を二つ用意すれば直感的でわかりやすいと思った。
+入力値の順番を変更するのにわざわざreveseメソッドを使わなくていいしな。
+output変数もいらないことに気づいた。eachメソッドを使用するタイミングで配列に対してsortメソッドを適応すれば済む話やな。
