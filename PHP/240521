@@ -1,0 +1,64 @@
+2024/05/21の積み上げ
+
+PHPにおいて、if文とswitch文のどちらを使うべきかは、コードの可読性や構造の観点から判断する。
+switch文を使うべきケース
+・同一変数に対する複数の異なる値に基づく処理を行う場合
+・条件が増える可能性がある場合
+
+if文を使うべきケース
+・条件が少なく、単純な場合
+・複雑な条件式が必要な場合
+
+switch文の構造は、rubyで例えるとcaseと同じだな。
+elseの処理の時は、defaultと設定することは直感増でわかりやすい！
+それ以外はrubyをやってきたからなんとなくわかる！
+オブジェクト指向のプログラミング言語を触ってきた恩恵を享受できている気がする！
+引数とかも同じ原理やもんなー。
+
+
+<?php
+function chapter03_02() {
+    $test_01 = false;
+    $test_02 = true;
+    if ($test_01 || $test_02) {
+        return 'OR';
+    }
+}
+
+print chapter03_02()
+?>
+
+#me
+<?php
+function chapter03_04($country) {
+    # === 以下に記載 ===
+    if ($country == 'JAPAN') {
+      return '¥';
+    } elseif ($country == 'US') {
+      return '$';
+    } else {
+      return 'らんてくんポイント';
+    }
+}
+
+print chapter03_04('JAPAN')
+?>
+
+#模範回答
+<?php
+function chapter03_04($country) {
+    switch ($country) {
+        case 'JAPAN' :
+              return '¥';
+              break;
+        case 'US' :
+              return '$';
+              break;
+        default :
+              return 'らんてくんポイント';
+              break;
+    }
+}
+
+print chapter03_04('JAPAN')
+?>
