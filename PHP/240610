@@ -1,0 +1,54 @@
+2024/06/10の積み上げ
+
+2024/06/10
+
+Laravelがバリデーションエラーのためにリダイレクトレスポンスを生成するとき、フレームワークは自動的に[セッションへのリクエストのすべての入力を一時保持保存します](https://readouble.com/laravel/9.x/ja/session.html#flash-data)。
+
+`old`メソッドは、直前に一時保持保存した入力データを[session](https://readouble.com/laravel/9.x/ja/session.html)から取り出します。
+
+`is_int` は引数が整数（integer）型かどうかを判定する関数
+
+リレーションはモデルファイルにて関数として定義する
+
+リレーションの定義方法
+
+Laravelでは、モデルクラス内にメソッドを定義することでリレーションを設定できます。たとえば、「1対多」のリレーションを定義する場合は、以下のように行います。
+
+```
+class Reporter extends Model
+{
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+}
+
+```
+
+リレーションを利用してデータを取得する場合は、以下のようにEloquentのリレーションシップメソッドを使用します。
+
+```
+$reporter = Reporter::find(1);
+$posts = $reporter->posts;
+
+```
+
+Laravelのリレーションシステムは非常に強力で、複雑なデータ構造も簡単に扱えます。各リレーションタイプの詳しい使い方やメソッドについては、Laravelの公式ドキュメントを参照してください。
+
+セッションを使用する際、コントローラで `$request->session()->put('some_key', 'someValue');` のように記述すると、そのユーザー（ブラウザ単位）からのアクセス時に `$request->session()->get('some_key')` が文字列 `someValue` を返す、
+
+ルーティングはroutes/web.phpに定義する
+
+`Route::redirect('/here', '/there');`の第一引数と第二引数には、それぞれ次の内容を記載します：
+
+- **第一引数** (`/here`): リダイレクト元のURLパス。つまり、このURLにアクセスしたときにリダイレクトが発生します。
+- **第二引数** (`/there`): リダイレクト先のURLパス。つまり、リダイレクト元のURLにアクセスすると、このURLに転送されます。
+
+以下のコマンドでターミナルにて、テーブルのカラム構成を確認することができる
+
+```
+docker compose exec app php artisan tinker
+
+> \Schema::getColumnListing("users");
+
+```
