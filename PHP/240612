@@ -1,0 +1,60 @@
+2024/06/12の積み上げ
+
+ログアウトの処理に関して、間違っていたことは次のようになる。
+
+- ユーザーコントローラーのupdateアクションに記述忘れがあり、テストに通らなかった
+    - 具体的には、$*user*->fill($*data*);を忘れていた
+        - このコードはどういった役割を果たしているのだろうか？
+
+公式ドキュメントをみて、Loginコントローラーのdestroyメソッドの中身は合っていた！ナイスおれ
+
+今日、理解すること
+
+1、下記、コードを他人に解説できるレベルで理解しよう
+
+- DELETEリクエストで、/loginにアクセスすると、loginコントローラーのdestroyアクションを実行される
+    - →name();の必要性ってわかる？
+        - →name();は名前付きルートと呼ばれる
+        - コントローラー、ビューでroute('login.destroy')と記載でき、保守性が高い
+        - URL生成が容易になる。route('login.destroy')と記述できる
+        - リダイレクトが容易になる。return redirect()->route('login.destroy')と記述できる
+
+```php
+Route::controller(LoginController::class)->group(function () {
+    Route::get('login', 'create')->name('login.create');
+    Route::post('login', 'store')->name('login.store');
+    Route::delete('login', 'destroy')->name('login.destroy');
+});
+```
+
+2、あと、なぜ下のコードにて、ログアウト処理はformを使っていて、ログインは不要なのか理解する
+
+- ログアウト処理はDELETEメソッドを送信しているから
+    - HTMLの制約上、DELETEリクエストを送信できないため、Laravelのメソッドスプーフィングを利用してフォームで送信する必要があります
+    - フォーム内の隠しフィールドでHTTPメソッドを指定して送信している
+
+```php
+            @if(Auth::check())
+                <!-- ログアウトフォーム -->
+                <form id="logout-form"  action="{{ route('login.destroy') }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <a class="nav-link" href="#" onclick="document.getElementById('logout-form').submit();">
+                        ログアウト
+                    </a>
+                </form>
+            @else
+                <a class="nav-link" href="{{ route('login.create') }}">ログイン</a>
+            @endif
+```
+
+3、あと、問題の切り分けもできるようになりたい
+
+- ルーティング、コントローラー、ビューどこに問題があるのか
+    - クロームのネットワークタブからHTTPリクエストを見るなど
+    
+
+4、usersコントローラーのupdateアクション内の$*user*->fill($*data*);を理解する
+
+- リクエストから受け取ったデータをモデルの属性に一括で設定するためのメソッド
+- `$request->all()`メソッドを使用して、HTTPリクエストから送信されたすべての入力データを取得できます。
