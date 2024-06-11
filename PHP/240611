@@ -1,0 +1,55 @@
+2024/06/11の積み上げ
+
+
+パスワードを保存する際には、Hash::make()を使うことで、暗号化を行うことができる
+
+```php
+
+コントローラー上部に下記コードを書いて、Hashライブラリのインポート
+use Illuminate\Support\Facades\Hash; 
+
+store関数ないに以下のように記述する
+$user->password = Hash::make($request->password);
+
+update関数内は以下のように記述する
+#before
+$user->fill($data)->save();
+
+#after
+if(isset($data['password']) && !is_null($data['password'])) {
+        $user->password = Hash::make($data['password']);
+}
+$user->save();
+
+```
+
+Userモデルに認証機能を実装したいときには、次のクラスを継承する。
+
+`Illuminate\Foundation\Auth\User` クラス
+
+```php
+# src/app/Models/User.php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable
+{
+    use HasFactory;
+
+    protected $fillable = ['name', ...省略...,];
+}
+
+```
+
+ログイン状態を保持する処理
+
+- `$request->session()->regenerate();` により、セッション情報が再生成されます。
+- この新しいセッション情報は、Authファサードを通じて利用可能になります。
+- この状態を一般的にログイン状態と称します。
+
+コントローラで `Illuminate\Support\Facades\Auth` を使用することにより、`Auth::user()` を通じてログインユーザーの情報を取得できます。また、Bladeテンプレートでは、特別な参照を必要とせずにログインユーザーの情報を取得できます。
