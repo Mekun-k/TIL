@@ -1,0 +1,32 @@
+2024/06/13の積み上げ
+
+2024/06/13
+
+タスク機能のCRUDを作成
+
+実装を日本語で定義する
+
+- モデル作成
+    - このコマンドで作成。docker compose exec app php artisan make:model Task -a
+- テーブル作成
+    - モデル作成時に生成されたマイグレーションファイルにカラムを記載する
+    - カラムを記入後、ターミナルにてdocker compose exec app php artisan migrateを実行
+    - テスト環境にもテーブルを用意。docker compose run app php artisan migrate --env=testing
+- モデルの設定
+    - カラムを追加した際には、モデルにもテーブルと同様のカラムを追加する必要ある。
+        - protected $fillable = ['カラム名', 'カラム名',];
+- ルーティング設定
+    - このコードで設定しているルートを確認することができるdocker compose exec app php artisan route:list
+    - web.phpにてルーティングを設定する
+        - 個別にルーティングを設定したい場合。Route::get('tasks/new', [TaskController::class, 'create'])->name('tasks.new');
+        - resourceから特定のアクションのみ省きたい場合（Route::resource('tasks', TaskController::class)->except(['create']);）
+        - 上にどのコントローラーを参照するのか記載が必要（use App\Http\Controllers\コントローラー名;)
+        - これがよしなに設定してくれるコード。Route::resource('tasks', UserController::class);
+- コントローラー設定
+    - アクションの中にデータを用意していく
+        - 
+- 
+- ビューページの用意
+
+ビューページの表示がうまくいかん
+問題の切り分けを行うために素のHTMLを書いて確認するべき
