@@ -1,0 +1,167 @@
+2024/06/19の積み上げ
+
+2024/06/19の積み上げ
+
+- どんなファイルが新しく出来たのか見てみましょう。
+    - コントローラーが複数個作成されている（パスワード、ログイン、登録など）
+    - viewファイルも複数作成されている（authやcomponentsなど）
+- ルーティングがどう書いてあるか確認しましょう。
+    - - アプリケーションのルートURL（/）にアクセスがあった場合、dashboardというビューを返します。このルートはauthとverifiedというミドルウェアを使用しており、ユーザーが認証され、かつメールアドレスが確認されていることを要求します。このルートはdashboardという名前が付けられています。
+    - authミドルウェアグループ内で、プロフィール編集、更新、削除のためのルートが設定されています。これらのアクションを実行するにはユーザーが認証されている必要があります。
+    - /profileへのGETリクエストで、ProfileControllerのeditメソッドが呼び出され、プロフィール編集ページが表示されます。このルートはprofile.editという名前が付けられています。
+    - /profileへのPATCHリクエストで、ProfileControllerのupdateメソッドが呼び出され、プロフィールの更新処理が行われます。このルーティングはprofile.updateという名前が付けられています。
+    - /profileへのDELETEリクエストで、ProfileControllerのdestroyメソッドが呼び出され、プロフィールが削除されます。このルートはprofile.destroyという名前が付けられています。
+    - require __DIR__.'/auth.php';により、auth.phpファイルが読み込まれ、認証に関連する追加のルート設定が行われます。これにより、ログイン、ログアウト、パスワードリセットなどの機能がアプリケーションに組み込まれます。
+    - `auth`ミドルウェアグループ内のルートに未認証のユーザーがアクセスすると、自動的にログインページにリダイレクトされるように設定されています。
+- ログインがどんな仕組みで出来ているのか調べてみましょう。
+    - 
+    
+    Laravel Breezeを使ったユーザー認証の仕組みを解説します。ユーザー認証のプロセスには、主に以下のステップが含まれます：
+    
+    1. **ユーザーリクエストとルーティング**
+    2. **認証フォームの表示**
+    3. **フォームの送信と認証処理**
+    4. **認証状態の保持とセッション管理**
+    
+    ### 1. ユーザーリクエストとルーティング
+    
+    Laravelアプリケーションでは、ユーザーが特定のURLにアクセスすると、ルーティングがそのリクエストを適切なコントローラーに送ります。Breezeが提供するルートは、`routes/web.php`に定義されています。
+    
+    ```php
+    use Illuminate\\Support\\Facades\\Route;
+    
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    
+    ```
+    
+    - `/login` (GET): ログインフォームを表示するルート。
+    - `/login` (POST): ログインフォームのデータを受け取り、ユーザーを認証するルート。
+    - `/logout` (POST): ユーザーをログアウトするルート。
+    
+    ### 2. 認証フォームの表示
+    
+    ユーザーがログインページにアクセスすると、`AuthenticatedSessionController`の`create`メソッドが実行されます。このメソッドは、ログインフォームを表示するビューを返します。
+    
+    ```php
+    public function create()
+    {
+        return view('auth.login');
+    }
+    
+    ```
+    
+    このメソッドによって、`resources/views/auth/login.blade.php`に定義されたログインフォームが表示されます。
+    
+    ### 3. フォームの送信と認証処理
+    
+    ユーザーがログインフォームにメールアドレスとパスワードを入力し、フォームを送信すると、データは`POST /login`リクエストとして送信されます。これにより、`AuthenticatedSessionController`の`store`メソッドが実行されます。
+    
+    ```php
+    public function store(Request $request)
+    {
+        // バリデーション
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+    
+        // 認証を試みる
+        if (! Auth::attempt($request->only('email', 'password'))) {
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        }
+    
+        // セッションの再生成
+        $request->session()->regenerate();
+    
+        // ダッシュボードへのリダイレクト
+        return redirect()->intended('/dashboard');
+    }
+    
+    ```
+    
+    - **バリデーション**: フォームの入力が正しい形式であることを確認します。
+    - **認証の試行**: `Auth::attempt`メソッドを使用して、入力されたメールアドレスとパスワードでユーザーを認証します。このメソッドは、`users`テーブルから一致するレコードを検索し、パスワードを確認します。
+        - 認証成功: セッションを再生成し、ユーザーをダッシュボードにリダイレクトします。
+        - 認証失敗: バリデーション例外を投げ、エラーメッセージを表示します。
+    
+    ### 4. 認証状態の保持とセッション管理
+    
+    ユーザーが認証されると、Laravelはユーザーの情報をセッションに保存します。これにより、次のリクエストでもユーザーが認証された状態を維持できます。
+    
+    - **セッションの再生成**: セッション固定攻撃を防ぐために、ログイン成功時にセッションIDを再生成します。
+        
+        ```php
+        $request->session()->regenerate();
+        
+        ```
+        
+    - **認証状態のチェック**: 認証が必要なルートにアクセスする際、`auth`ミドルウェアがユーザーの認証状態をチェックします。認証されていない場合、ログインページにリダイレクトされます。
+    
+    ### 認証の背後にある仕組み
+    
+    1. **リクエストの受信**: ユーザーがログインフォームを送信すると、HTTPリクエストがLaravelアプリケーションに届きます。
+    2. **ルートのマッチング**: ルーティングシステムがリクエストURLにマッチするルートを探し、そのルートに関連付けられたコントローラーメソッドを実行します。
+    3. **認証処理**: `Auth::attempt`メソッドが、`users`テーブルからユーザーを検索し、パスワードを検証します。パスワードは、`bcrypt`ハッシュ化された値と比較されます。
+    4. **セッション管理**: 認証が成功すると、ユーザー情報がセッションに保存され、次のリクエストでもユーザーが認証された状態を維持します。
+    
+    ### ログアウト
+    
+    ログアウトリクエストが送信されると、`AuthenticatedSessionController`の`destroy`メソッドが実行されます。
+    
+    ```php
+    public function destroy(Request $request)
+    {
+        Auth::guard('web')->logout();
+    
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    
+        return redirect('/');
+    }
+    
+    ```
+    
+    - **ログアウト**: `Auth::guard('web')->logout()`を呼び出してユーザーをログアウトします。
+    - **セッションの無効化**: セッションを無効化し、セッション固定攻撃を防ぐためにトークンを再生成します。
+    
+    これがLaravel Breezeを使ったユーザー認証の基本的な仕組みです。Breezeは、これらの認証プロセスを簡単に設定・カスタマイズできるようにするためのシンプルで使いやすいスターターキットです。
+    
+
+- breezeをインストールしたときに生成されたviewファイルにて以下の記述があった。
+これの意味を理解しておく
+x-guest-layout
+
+- **src/lang/ja.jsonはいつ生成されたのか**
+    - Breezejpをインストールしたときに生成される
+    - 上記ファイルで設定した日本語は、viewファイルのなかで{{ __('Please Register here') }}と書くことで使用できるっぽい
+
+- web.phpの記述。これもあとでルーティングの意味を把握しておく
+
+```php
+Route::get('/', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
+
+```
+
+```
+- アプリケーションのルートURL（/）にアクセスがあった場合、dashboardというビューを返します。このルートはauthとverifiedというミドルウェアを使用しており、ユーザーが認証され、かつメールアドレスが確認されていることを要求します。このルートはdashboardという名前が付けられています。
+- authミドルウェアグループ内で、プロフィール編集、更新、削除のためのルートが設定されています。これらのアクションを実行するにはユーザーが認証されている必要があります。
+- /profileへのGETリクエストで、ProfileControllerのeditメソッドが呼び出され、プロフィール編集ページが表示されます。このルートはprofile.editという名前が付けられています。
+- /profileへのPATCHリクエストで、ProfileControllerのupdateメソッドが呼び出され、プロフィールの更新処理が行われます。このルーティングはprofile.updateという名前が付けられています。
+- /profileへのDELETEリクエストで、ProfileControllerのdestroyメソッドが呼び出され、プロフィールが削除されます。このルートはprofile.destroyという名前が付けられています。
+- require __DIR__.'/auth.php';により、auth.phpファイルが読み込まれ、認証に関連する追加のルート設定が行われます。これにより、ログイン、ログアウト、パスワードリセットなどの機能がアプリケーションに組み込まれます。
+
+```
