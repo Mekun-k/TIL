@@ -1,0 +1,39 @@
+2024/06/25
+
+2024/06/25
+
+- テストに落ちていた理由は、ファクトリの設定をしていなかったことにより、テストデータ生成時にbodyカラムの値が空になっていた。
+    - database/factories/CommentFactory.phpにて、以下のコードを用意
+        
+        protected $model = Comment::class;
+        
+        public function definition()
+        {
+        return [
+        'body' => $this->faker->text,
+        ];
+        }
+        
+- リレーションを使ってオブジェクトを作成する方法
+    - 
+    
+    $request->user()->comments()->create([
+    'body' => $request->body,
+    'board_id' => $board->id,
+    ]);
+    
+
+### フォームから送信された情報
+
+- この書き方でURLにidを含まれてコントローラーに情報を送信できる
+<form *method*='POST' *action*="{{ route('boards.comments.store', ['board' => $board->id]) }}">
+
+- **第一引数 `Request $request`**:
+    - この引数には、フォームから送信されたデータやHTTPリクエストに関する情報が含まれます。
+    - 例えば、コメントフォームから送信されたデータ（`body`フィールドなど）はこのオブジェクトを通じてアクセスできます。
+
+### URLに含まれているID
+
+- **第二引数 `$id`**:
+    - この引数には、URLの一部として渡されるボードのIDが含まれます。
+    - 例えば、`/boards/1/comments` のようなURLの場合、このIDは `1` となります。
