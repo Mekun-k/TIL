@@ -1,0 +1,19 @@
+
+2024/06/27
+
+まず、タイトルを勘違いしていた。
+
+ブラウザのbody要素に表示するものだと勘違いしていたが、タイトルというのは、タブに表示される文字のことだった。
+なので、layout.appのtitleタグ内に@yieldディレクティブを使用、各viewページで@sectionディレクティブを使用してタイトルを設定すればいいだけだった。
+
+layouts/app.blade
+
+        <title>@yield('content', 'RUNTEQ BOARD')</title>
+
+index.
+
+@section('content', 'RUNTEQ BOARD | 掲示板一覧')
+
+ユーザー認証系は別のlayoutsファイルがあるので注意が必要。
+
+テストに通らないので原因とを特定する
