@@ -1,0 +1,208 @@
+2024/07/04の積み上げ
+
+- 残りの実装
+    - ブックマーク時、アイコンを変更させる
+    - 削除の処理も実行する
+    
+    2024/07/03
+    
+    - belongsToとbelongsToManyの違い及び使い分け
+        - 
+    - attachメソッドの使い方
+        - 
+    - 多対多での、モデルファイルでの記述方法
+        - 下のような書き方
+        
+        public function bookmarkedBy()
+        {
+        return $this->belongsToMany(User::class, 'board_user');
+        }
+        
+    - 掲示板一覧ページにて、リレーションを使って情報を取得する方法
+        - $boards = Board::with('bookmarkedBy')->get();
+    - まず、リレーションの設定が正しい判断する
+        - tinkerによって判断するのが正しいとみた
+            - tinkerを起動してオブジェクトを生成・保存
+            - そこからリレーションを呼び出してみるとか
+            - まずは、tinkerを使用したリレーションの設定を確かめよう
+                - まずは、tinkerにてレコードの生成を学習する
+                    
+                    ```php
+                    > use App\Models\Bookmark;
+                    > $userId = 1;
+                    = 1
+                    
+                    > $boardId = 1;
+                    = 1
+                    
+                    $bookmark = Bookmark::create ([ 'user_id' => $userId, 'board_id' => $boardId])
+                    ```
+                    
+                - リレーションを確認する
+                    
+                    ```php
+                    $board->user
+                    $user->boards
+                    ```
+                    
+                - デバッグ確認雛形
+                    
+                    ```php
+                    $user = User::find(11)
+                    $board = Board::find(101)
+                    $user->bookmarks
+                    ```
+                    
+                - $user→bookmarksが正常に動いたときのコード
+                    
+                    ```php
+                    User
+                        public function bookmarks()
+                        {
+                            return $this->belongsToMany(Board::class, 'bookmarks', 'user_id', 'board_id');
+                        }
+                        
+                    Board
+                        public function bookmarks()
+                        {
+                            return $this->belongsToMany(Bookmark::class, 'bookmarks');
+                        }
+                        
+                    Bookmark
+                        use HasFactory;
+                        protected $fillable = [
+                            'user_id',
+                            'board_id',
+                        ];
+                    
+                        public function user()
+                        {
+                            return $this->belongsTo(User::class);
+                        }
+                    
+                        public function board()
+                        {
+                            return $this->belongsTo(Board::class);
+                        }
+                    ```
+                    
+                    - テーブルのレコードを表示させる方法
+                    
+                    ```php
+                    $bookmarks = App\Models\Bookmark::all();
+                    ```
+                    
+    - 
+    - 
+    - 
+    
+    2024/07/04
+    
+    やっていて思ったのは、コマンドはコピペじゃなく、タイピングして入力した方が覚える。
+    
+    まじで、タイピングしてコマンドを書くことで手を動かすから脳への知識の定着率がいい説を提唱したい。
+    
+    実装したいこと
+    
+    - ログイン中のユーザーが対象の掲示板をブックマークしているか調べる
+        - ブックマークしているか調べるには
+            - 対象の掲示板からリレーションでブックマークを検出して
+                - その中にブックマークのuser_idとログイン中のuser.idがあるか調べる
+                    
+                    ```php
+                    $board = Board::find(3)
+                    $board->bookmarks
+                          
+                    カラム構成
+                    Schema::create('users', function (Blueprint $table) {
+                        $table->id();
+                        $table->string('name');
+                        $table->string('email')->unique();
+                        $table->timestamp('email_verified_at')->nullable();
+                        $table->string('password');
+                        $table->rememberToken();
+                        $table->timestamps();
+                    });
+                    
+                    Schema::create('boards', function (Blueprint $table) {
+                        $table->id();
+                        $table->string('title');
+                        $table->text('description');
+                        $table->foreignId('user_id')->constrained()->onDelete('cascade');
+                        $table->timestamps();
+                    });
+                    
+                    Schema::create('bookmarks', function (Blueprint $table) {
+                        $table->id();
+                        $table->foreignId('user_id')->constrained()->onDelete('cascade');
+                        $table->foreignId('board_id')->constrained()->onDelete('cascade');
+                        $table->timestamps();
+                    });
+                    ```
+                    
+                - ブックマーク解除時はURLにboardとbookmarkのidを渡さないといけない
+                - どうやってbookmarkの情報を渡せばいいか悩むな
+                    - ビューに以下のコードを直書きした。あんまりよろしくなさそう
+                    
+                    ```php
+                      @php
+                        $bookmark = $board->bookmarks->where('user_id', Auth::user()->id)->first();
+                      @endphp
+                    ```
+                    
+        - コードの出し方：Cmd + Opt + 8
+        - storeメソッドの書き方
+            - どちらの書き方でも処理は正常に動くが、後者のコードの方が記述量も少なく、直感的でわかりやすいコードになっている。しらべたらデータベースにクエリを送る回数も少なくて済むメリットもある。boardのところやな
+            
+            ```php
+            #修正前
+            public function store(Board $board)
+            {
+                $user = Auth::user();
+                $board = Board::find($board->id);
+                $bookmark = Bookmark::create (['user_id' => $user->id, 'board_id' => $board->id]);
+                return redirect()->back()->with('success', 'ブックマークを追加しました');
+            }
+              
+            #修正後
+            public function store(Board $board)
+            {
+                $user = Auth::user();
+                $user->bookmarks()->create(['board_id' => $board->id]);
+                return redirect()->back()->with('success', 'ブックマークを追加しました');
+            }
+            
+            ```
+            
+        
+        - boardコントローラーのindexアクション
+            
+            ```php
+            public function index()
+            {
+                // ボードを取得し、ブックマーク情報を結合して取得する
+                $boards = Board::with(['bookmarks' => function ($query) {
+                    // ログインしているユーザーのIDを取得
+                    $userId = Auth::id();
+            
+                    // ユーザーがブックマークしている掲示板のみを取得
+                    $query->where('user_id', $userId);
+                }])
+                ->get();
+            
+                return view('boards.index', compact('boards'));
+            }
+            
+            ```
+            
+        - 下のコードの違いを理解する
+            - 後者のコードを使用すると、関連するデータを事前に取得しておくことができる。これにより、複数のデータを取得する際に必要な関連データのクエリを減らすことができる。
+            - あとで、詳しくクエリの実行回数を調べる
+                
+                ```php
+                #改善前
+                $boards = Board::all();
+                
+                #改善後
+                $boards = Board::all()->load('bookmarks');
+                ```
