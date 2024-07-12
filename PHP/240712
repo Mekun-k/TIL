@@ -1,0 +1,86 @@
+2024/07/12の積み上げ
+2024/07/12
+
+ajaxの解答を確認する
+
+ちょいとイベント発火の認識がずれていた
+
+自分　ブックマークのボタンがクリックされたとき
+
+回答　ブックマークのフォームが送信されたとき
+
+フォームから送信されたHTTPリクエストを判別するために、input要素を取得してmethod属性の中身を調べている
+
+- duskってなんやろ
+- なぜ、削除だけidを設定しているのか
+- 
+
+```php
+# 56847_Mekun-k_basic_laravel/src/resources/js/bookmark.js
+
+console.log('JavaScriptファイルが正しく読み込まれました。');
+
+document.addEventListener('DOMContentLoaded', function() {
+  const bookmarkForms = document.querySelectorAll('.bookmark-form');
+
+  bookmarkForms.forEach((bookmarkForm) => {
+    bookmarkForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      console.log('ブックマークがクリックされました');
+      const url = this.getAttribute('action');
+      const method = this.method;
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+      // AxiosでCSRFトークンを設定
+      axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+
+      axios({
+        method: method,
+        url: url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.data && response.data.html) {
+          bookmarkForm.innerHTML = response.data.html; // ボタンのHTMLを更新
+        } else {
+          console.error('レスポンスデータが不正です:', response.data);
+        }
+      })
+      .catch(error => console.error('エラー:', error));
+    });
+  });
+});
+
+```
+
+```php
+調べながら書いているコード
+// ウェブページのリソースが完全に読み込まれた後に発動するイベント
+window.addEventListener('load', function() {
+  // クラス名'bookmark-form'を持つ全ての要素をbookmarkForm定数に代入する
+  const bookmarkForms = document.querySelectorAll('.bookmark-form');
+  bookmarkForms.forEach((bookmarkForm) => {
+    // フォームが送信されたときの処理
+    // つまりブックマークボタンがクリックされたときではなく、フォームが送信されたときにイベント発火させる
+    bookmarkForm.addEventListener('submit', (event) => {
+      // フォーム送信時のページリロードを防ぐため
+      event.preventDefault();
+      // フォームに設定されているaction属性を取得している
+      const  url = event.target.getAttribute('action');
+      // ここの意味がよくわからん
+      let httpMethod = 'POST';
+      // input属性が_methodの要素をmethodInput定数に代入
+      const methodInput = event.target.querySelector('input[name="_method"]');
+
+      // 隠しフィールドがあり、HTTPリクエストがDELETEの場合、HTTPリクエストをDELETEに切り替える
+      if (methodInput && methodInput.value === 'DELETE') {
+        httpMethod = 'DELETE';
+      }
+
+    });
+  });
+});
+```
