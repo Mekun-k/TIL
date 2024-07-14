@@ -1,0 +1,68 @@
+2024/07/14
+
+削除の機能を実装する
+
+まずは、過程から入ろうか
+
+んーと、まずは削除側にも処理が発動してどこからどこまでは正常に動いているか確認する。
+
+なんか、buttonタグにidを設定していた気がする。それが原因かもしれんあ
+
+結論、jsファイルの内容に不備があった
+
+明日、修正内容を理解する
+
+コードを自分の手で書き、一行ごとに役割を理解すること
+
+```php
+document.addEventListener('DOMContentLoaded', function() {
+  function setBookmarkListeners() {
+    const bookmarkForms = document.querySelectorAll('.bookmark-form');
+    bookmarkForms.forEach((bookmarkForm) => {
+      if (!bookmarkForm.hasAttribute('data-listener')) {
+        bookmarkForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const url = event.target.getAttribute('action');
+          let httpMethod = 'POST';
+          const methodInput = event.target.querySelector('input[name="_method"]');
+          if (methodInput && methodInput.value === 'DELETE') {
+            httpMethod = 'DELETE';
+          }
+          axios({
+            method: httpMethod,
+            url: url,
+            headers: {
+              'X-CSRF-TOKEN': event.target.querySelector('input[name="_token"]').value,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            }
+          })
+          .then(response => {
+            bookmarkForm.outerHTML = response.data.html;
+            setBookmarkListeners(); // 新しく挿入されたHTMLに対してもリスナーを再設定
+          })
+          .catch(error => console.error(error));
+        });
+        bookmarkForm.setAttri　bute('data-listener', 'true');
+      }
+    });
+  }
+
+  setBookmarkListeners();
+
+  const observer = new MutationObserver(setBookmarkListeners);
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+
+```
+
+- **イベントの設定タイミング**:
+    - 最初のコードでは、`window.addEventListener('load', function() { ... })`を使用していますが、修正したコードでは`document.addEventListener('DOMContentLoaded', function() { ... })`を使用しています。`DOMContentLoaded`はページのコンテンツが全て読み込まれた時点で発火するため、より早くイベントが設定されます。
+- **イベントリスナーの再設定**:
+    - 最初のコードでは、ページロード時に一度だけイベントリスナーが設定されます。動的に変更された部分には再度リスナーが設定されません。
+    - 修正したコードでは、`MutationObserver`を使用してDOMの変更を監視し、新たに追加された要素にもイベントリスナーを再設定します。
+- **要素の更新方法**:
+    - 最初のコードでは、`bookmarkForm.innerHTML = response.data.html;`を使用していますが、これではフォーム全体を更新することができず、再度イベントリスナーを設定する必要がある部分が更新されない可能性があります。
+    - 修正したコードでは、`bookmarkForm.outerHTML = response.data.html;`を使用してフォーム全体を更新します。これにより、フォーム全体が新しいHTMLで置き換えられ、正しく更新されます。
+- **リスナーの重複防止**:
+    - 修正したコードでは、リスナーが二重に設定されないように、`data-listener`属性を使用して、一度リスナーが設定された要素には再度リスナーを設定しないようにしています。
