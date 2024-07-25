@@ -54,3 +54,42 @@ axiosにてdataオプションにdody要素を指定することで解決
 ```
 
 次は削除機能を実装する
+
+午後の作業
+
+まず、削除ボタンを表示する
+
+ゴミ箱アイコンが無難
+
+↑アイコンをボタン要素として画面上に配置することはできた
+
+ルートに必要なパラメーターが不足しておりエラーが発生していた。
+
+原因、パラメーターの書き方が間違っていたため、$commentのパラメータが渡せていなかった
+
+```php
+#誤
+<form action="{{ route('boards.comments.destroy', $board->id, $comment->id) }}" method="POST">
+
+#正
+<form action="{{ route('boards.comments.destroy', [$board->id, $comment->id]) }}" method="POST">
+
+```
+
+コントローラーにて、フォームから送信されるパラメータを取得したい場合、引数にて変数を定義することによって実装できる
+
+```php
+  public function destroy(Request $request, $boardId, $commentId)
+  {
+    $board = Board::find($boardId);
+    $comment = Comment::find($commentId);
+    $comment->delete();
+
+    $html = view('boards.partials.comment', compact('board', 'comment'))->render();
+    return response()->json(['html' => $html]);
+  }
+```
+
+以下のコードを参考にして、コメント削除を非同期通信によって実装する
+
+※同期通信は正常に処理が実行されるのは確認済み
