@@ -1,0 +1,56 @@
+2024/07/25
+
+jsファイルにてajaxの処理を書いてコントローラーに適切なリクエストを送る
+
+axiosの処理が正常に作動していない
+
+後で原因を調べる
+
+変数には正しい値が用意されているのはconsole.logにて確認済み
+
+非同期通信にて処理は送信できていたが、バリデーションエラーに引っかかっていた。
+
+ commentモデルのbody要素をリクエストに含んでいなかったのが原因
+
+事前にbody要素を変数に代入
+
+axiosにてdataオプションにdody要素を指定することで解決
+
+オプション名などタイポがないか確認する
+
+非同期通信にてコメントの作成を実装できた。
+
+ブックマーク機能の非同期通信と異なる点は以下の通り。
+
+- body要素をaxiosのdataオプションから渡す必要がある
+- HTML属性の置き換えが違う
+    - コメントフォームを空にする
+    - 要素の追加方法
+
+```php
+	
+					const body = event.target.querySelector('input[name="body"').value;
+
+          axios({
+            method: httpMethod,
+            url: url,
+            headers: {
+              'X-CSRF-TOKEN': event.target.querySelector('input[name="_token"]').value,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            data: {
+              body: body
+            }
+          })
+          .then(response => {
+            // 新しいコメントをコメント一覧に追加
+            const commentList = document.querySelector('.comment-list');
+            const newComment = document.createElement('div');
+            newComment.innerHTML = response.data.html;  // サーバーから返ってきたHTMLを使用
+            commentList.prepend(newComment); //　要素を先頭に追加
+            commentForm.reset();  // フォームをリセット
+          })
+```
+
+次は削除機能を実装する
