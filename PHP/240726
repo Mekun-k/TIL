@@ -1,0 +1,299 @@
+2024/07/26の積み上げ
+
+2024/07/26の積み上げ
+
+コメントの削除機能も非同期通信によって実装する
+
+そのため、comment.jsファイルを編集する
+
+まず、コメントを削除する時にどのような処理が必要なのか考えよう
+
+削除対象のコメントを取得
+
+削除対象のコメントを変数に代入
+
+削除対象のコメントを削除
+
+HMLT上でコメントが削除されるよう要素を更新する
+
+ページをリロード後、削除ボタンをクリックすると非同期通信にて実行できるようになった。
+
+でも、ページをリロードしないと削除機能を非同期通信にて実行できない。
+
+厳密にはコメントを追加後、削除機能を非同期通信にて実行できない。
+
+逆は実行可能。
+
+新しく追加されたコメントに対してイベントリスナーが設定されていないのが原因
+
+新しく追加されたコメントに対してイベントリスナーを設定すれば解決する
+
+```php
+# 修正前
+.then(response => {
+  if (httpMethod === 'DELETE' ) {
+    console.log('削除メソッド');
+  }
+  else {
+    // 新しいコメントをコメント一覧に追加
+    const commentList = document.querySelector('.comment-list');
+    const newComment = document.createElement('div');
+    newComment.innerHTML = response.data.html;  // サーバーから返ってきたHTMLを使用
+    commentList.prepend(newComment);
+    commentForm.reset();  // フォームをリセット
+  }
+})
+
+# 修正後
+.then(response => {
+if (httpMethod === 'DELETE') {
+  // コメントを削除
+  const commentElement = event.target.closest('.comment');
+  if (commentElement) {
+    commentElement.remove();
+  }
+} else {
+  // 新しいコメントをコメント一覧に追加
+  const commentList = document.querySelector('.comment-list');
+  const newComment = document.createElement('div');
+  newComment.innerHTML = response.data.html;  // サーバーから返ってきたHTMLを使用
+  commentList.prepend(newComment);
+  commentForm.reset();  // フォームをリセット
+  setCommentListeners();  // 新しいコメントにリスナーを追加
+}
+})
+```
+
+作成機能に関しては非同期通信で何度も実行できる。
+
+削除機能に関しては非同期通信で一度しか実行できない
+
+あまりコードを理解していなくても実装できてしまうのは怖いことだ。
+
+でも、chatgptから教えてもらったコードを自分なりに解釈して非同期通信を実装することができたのはナイスすぎる。よく段階的に実装できたものだ。
+
+ちょいとコードに補足のコメントを書いてchatgptに採点してもらおう。
+
+それで自分のコードに対する認識に差異がないか確認できる
+
+現在のコードでの問題は、新しく追加されたコメントの削除ボタンに対してイベントリスナーを再設定していないことです。追加後に新しいコメントに削除リスナーを設定するように修正します。
+
+まず、新しいコメントに対して削除リスナーを設定する `setDeleteListeners` 関数を追加します。そして、新しいコメントが追加されるたびにこの関数を呼び出すようにします。
+
+```php
+# 修正前
+document.addEventListener('DOMContentLoaded', function() {
+  function setCommentListeners() {
+
+    const commentForms = document.querySelectorAll('.comment-form');
+    commentForms.forEach((commentForm) => {
+      if (!commentForm.hasAttribute('data-listener')) {
+          commentForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const url = event.target.getAttribute('action');
+          let httpMethod = 'POST';
+          const methodInput = event.target.querySelector('input[name="_method"');
+          if (methodInput && methodInput.value == 'DELETE') {
+            httpMethod = 'DELETE';
+          }
+          const body = event.target.querySelector('input[name="body"').value;
+
+          axios({
+            method: httpMethod,
+            url: url,
+            headers: {
+              'X-CSRF-TOKEN': event.target.querySelector('input[name="_token"]').value,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            data: {
+              body: body
+            }
+          })
+          .then(response => {
+            if (httpMethod === 'DELETE' ) {
+              console.log('削除メソッド');
+            }
+            else {
+              // 新しいコメントをコメント一覧に追加
+              const commentList = document.querySelector('.comment-list');
+              const newComment = document.createElement('div');
+              newComment.innerHTML = response.data.html;  // サーバーから返ってきたHTMLを使用
+              commentList.prepend(newComment);
+              commentForm.reset();  // フォームをリセット
+              setDeleteListeners(newComment);  // 新しいコメントに削除リスナーを追加
+            }
+          })
+          .catch(error => {
+            if (error.response && error.response.status === 422) {
+                console.log('Validation error:', error.response.data.errors);
+            } else {
+                console.log('Error:', error.message);
+            }
+          });
+        });
+        commentForm.setAttribute('data-listener', 'true');
+      }
+    });
+  }
+
+  const deleteButtons = document.querySelectorAll('.comment-destroy');
+  deleteButtons.forEach((deleteButton) => {
+    if (!deleteButton.hasAttribute('data-listener')) {
+      deleteButton.addEventListener('click', event => {
+        event.preventDefault();
+        const form = deleteButton.closest('form');
+        const url = form.getAttribute('action');
+        const csrfToken = form.querySelector('input[name="_token"]').value;
+
+        axios({
+          method: 'DELETE',
+          url: url,
+          headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+          }
+        })
+        .then(response => {
+          // コメントを削除
+          const commentElement = form.closest('.comment');
+          if (commentElement) {
+            commentElement.remove();
+          }
+        })
+        .catch(error => {
+          console.log('Error:', error.message);
+        });
+      });
+      deleteButton.setAttribute('data-listener', 'true');
+    }
+  });
+
+  setCommentListeners();
+
+  const observer = new MutationObserver(setCommentListeners);
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+
+#修正後
+document.addEventListener('DOMContentLoaded', function() {
+  function setCommentListeners() {
+
+    const commentForms = document.querySelectorAll('.comment-form');
+    commentForms.forEach((commentForm) => {
+      if (!commentForm.hasAttribute('data-listener')) {
+          commentForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const url = event.target.getAttribute('action');
+          let httpMethod = 'POST';
+          const methodInput = event.target.querySelector('input[name="_method"]');
+          if (methodInput && methodInput.value == 'DELETE') {
+            httpMethod = 'DELETE';
+          }
+          const body = event.target.querySelector('input[name="body"]').value;
+
+          axios({
+            method: httpMethod,
+            url: url,
+            headers: {
+              'X-CSRF-TOKEN': event.target.querySelector('input[name="_token"]').value,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            data: {
+              body: body
+            }
+          })
+          .then(response => {
+            if (httpMethod === 'DELETE' ) {
+              console.log('削除メソッド');
+            }
+            else {
+              // 新しいコメントをコメント一覧に追加
+              const commentList = document.querySelector('.comment-list');
+              const newComment = document.createElement('div');
+              newComment.innerHTML = response.data.html;  // サーバーから返ってきたHTMLを使用
+              commentList.prepend(newComment);
+              commentForm.reset();  // フォームをリセット
+              setDeleteListeners(newComment);  // 新しいコメントに削除リスナーを追加
+            }
+          })
+          .catch(error => {
+            if (error.response && error.response.status === 422) {
+                console.log('Validation error:', error.response.data.errors);
+            } else {
+                console.log('Error:', error.message);
+            }
+          });
+        });
+        commentForm.setAttribute('data-listener', 'true');
+      }
+    });
+  }
+
+  function setDeleteListeners(context) {
+    const deleteButtons = context.querySelectorAll('.comment-destroy');
+    deleteButtons.forEach((deleteButton) => {
+      if (!deleteButton.hasAttribute('data-listener')) {
+        deleteButton.addEventListener('click', event => {
+          event.preventDefault();
+          const form = deleteButton.closest('form');
+          const url = form.getAttribute('action');
+          const csrfToken = form.querySelector('input[name="_token"]').value;
+
+          axios({
+            method: 'DELETE',
+            url: url,
+            headers: {
+              'X-CSRF-TOKEN': csrfToken,
+              'Accept': 'application/json',
+            }
+          })
+          .then(response => {
+            // コメントを削除
+            const commentElement = form.closest('.comment');
+            if (commentElement) {
+              commentElement.remove();
+            }
+          })
+          .catch(error => {
+            console.log('Error:', error.message);
+          });
+        });
+        deleteButton.setAttribute('data-listener', 'true');
+      }
+    });
+  }
+
+  setCommentListeners();
+  setDeleteListeners(document); //なぜ引数にdocumentを設定しているのか
+
+  const observer = new MutationObserver(setCommentListeners);
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+
+```
+
+jsの概念を勉強したほうがいい
+
+まず、イベントリスナーとはなんぞや
+
+jsではDOMを更新する際にイベントリスナーを設定する必要がある
+
+setDeleteListeners(*document*); *//なぜ引数にdocumentを設定しているのか*
+
+- `setCommentListeners` はページ全体を対象にするため引数は不要で、`document.querySelectorAll` を使って全てのコメントフォームに対して処理を行います。
+- `setDeleteListeners` は特定のコンテキストに対して処理を行うため、引数として対象となる DOM 要素（コンテナ）を受け取り、そのコンテナ内での要素に対して処理を行います。
+
+以下のdestoryアクションに意味を調べる
+
+$comment = **Comment**::**where**('board_id', $board)->**findOrFail**($comment);
+
+```php
+findOrFail($comment):
+
+findOrFail メソッドは、指定した主キー（通常は id）に一致するレコードを取得しようとします。
+$comment 変数には、取得したいコメントのIDが入っていると考えられます。
+findOrFail メソッドは、IDに一致するレコードが存在しない場合、
+ModelNotFoundException をスローします。
+```
