@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.11/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="title">
+            <h1>Typing Game</h1>
+            <div class="marker"></div>
+        </div>
+        <button v-if="startFlg!=true" class="startButton mb-20" @click="gameStart">START</button>
+        <div v-if="startFlg">
+            <div class="question mb-20">{{ currentQuestion }}</div>
+            <div v-if="flashMessage" class="flash-message">{{flashMessage}}</div>
+            <div v-if="currentQuestionCounts == questionCounts" class="clear">Clear!</div>
+            <div class="typeFormWrapper mb-20">
+                <input id="typeForm" v-model="typeBox" type="text" class="typeForm">
+            </div>
+            <div class="gaugeWrapper mb-20">
+                <div v-bind:style="styleObject" class="gauge"></div>
+            </div>
+            <div>{{currentQuestionCounts}}/{{questionCounts}}</div>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el:"#app",
+            data:{
+                startFlg:"",
+                currentQuestion:"",
+                questions:[
+                'hokkaido',
+                'iwate',
+                'gunma',
+                'kanagawa',
+                'ishikawa',
+                'nara',
+                'okayama',
+                'kochi',
+                'kumamoto',
+                'okinawa'
+                ],
+                typeBox:"",
+                currentQuestionCounts:0,
+                questionCounts:0,
+                currentSize:1,
+                flashMessage:""
+            },
+            computed:{
+                styleObject:function(){
+                    width = 10 * this.currentQuestionCounts + "%"
+                    if (this.currentQuestionCounts == 10){
+                        color = "#03a9f4"
+                    } else{
+                        color = "orange"
+                    }
+                    return{
+                        'width':width,
+                        'background-color':color
+                    }
+                }
+            },
+            methods:{
+                gameStart:function(){
+                    this.startFlg = true;
+                    this.flashMessage = "";
+                    this.$nextTick(function(){
+                        document.getElementById('typeForm').focus()
+                    })
+                }
+            },
+            mounted:function(){
+                this.currentQuestion = this.questions[0];
+                this.questionCounts = this.questions.length
+            },
+            watch:{
+                typeBox:function(newValue){
+                    if(newValue != this.currentQuestion.substring(0, this.currentSize)){
+                        this.flashMessage = "入力値が違います！";
+                        this.typeBox = this.currentQuestion.substring(0, this.currentSize - 1);
+
+                        setTimeout(() => {
+                            this.flashMessage = "";
+                        }, 2000);
+                    } else {
+                        this.flashMessage = "";
+                        this.currentSize += 1
+                    }
+
+                    if(newValue == this.currentQuestion){
+                        this.flashMessage = "";
+                        this.questions.splice(0,1);
+                        this.currentQuestion = this.questions[0];
+                        this.typeBox = "";
+                        this.currentSize = 0;
+                        this.currentQuestionCounts += 1;
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>
